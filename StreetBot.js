@@ -91,7 +91,7 @@ var esBot = {
         name: "StreetBot",
         creator: "TheDestabilise",
         loggedInID: null,
-        scriptLink: "https://raw.githubusercontent.com/Yemasthui/basicBot/master/basicBot.js",
+        scriptLink: "https://raw.githubusercontent.com/iFrooosty/StreetBot/master/StreetBot.js",
         cmdLink: "http://git.io/245Ppg",
         roomSettings: {
             maximumAfk: 120,
