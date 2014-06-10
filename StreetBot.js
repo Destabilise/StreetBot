@@ -66,7 +66,7 @@ var retrieveFromStorage = function(){
     var json_sett = null;
     var roominfo = document.getElementById("room-info");
     var info = roominfo.innerText;
-    var ref_bot = "@basicBot=";
+    var ref_bot = "@StreetBot=";
     var ind_ref = info.indexOf(ref_bot);
     if(ind_ref > 0){
         var link = info.substring(ind_ref + ref_bot.length, info.length);
@@ -1455,7 +1455,7 @@ var esBot = {
                                 if(this.type === 'exact' && chat.message.length !== cmd.length) return void (0);
                                 if( !esBot.commands.executable(this.rank, chat) ) return void (0);
                                 else{
-                                    API.sendChat('/me lista De Emoji: http://www.emoji-cheat-sheet.com/');
+                                    API.sendChat('/me Lista De Emoji: http://www.emoji-cheat-sheet.com/');
                                 };                              
                         },
                 },
@@ -1642,7 +1642,7 @@ var esBot = {
                                 if( !esBot.commands.executable(this.rank, chat) ) return void (0);
                                 else{
                                     storeToStorage();
-                                    API.sendChat('/me Shutting down.');
+                                    API.sendChat('/me StreetBot está agora offline :joy: .');
                                     esBot.disconnectAPI();
                                     setTimeout(function(){kill();},1000);
                                 };                              
