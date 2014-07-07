@@ -2033,7 +2033,7 @@ var esBot = {
                                 if(this.type === 'exact' && chat.message.length !== cmd.length) return void (0);
                                 if( !esBot.commands.executable(this.rank, chat) ) return void (0);
                                 else{
-                                    API.sendChat('/me Ja Volto :yum: .');
+                                    API.sendChat('/me Reiniciando o Bot.. :yum: .');
                                     esBot.disconnectAPI();
                                     kill();
                                     setTimeout(function(){$.getScript(esBot.scriptLink);},2000);
