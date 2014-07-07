@@ -1295,7 +1295,7 @@ var esBot = {
                                                 API.moderateDeleteChat(currentchat[i].classList[j].substr(4));
                                         }
                                     }                                 
-                                return API.sendChat('/me [@' + chat.from + '] Apanga o chat.');
+                                return API.sendChat('/me [@' + chat.from + '] Apanga tudo.');
                                 
                                 };                              
                         },
