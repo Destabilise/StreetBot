@@ -1642,7 +1642,7 @@ var esBot = {
                                 if( !esBot.commands.executable(this.rank, chat) ) return void (0);
                                 else{
                                     storeToStorage();
-                                    API.sendChat('/me StreetBot está agora offline :joy: .');
+                                    API.sendChat('/me StreetBot is dead :joy: .');
                                     esBot.disconnectAPI();
                                     setTimeout(function(){kill();},1000);
                                 };                              
