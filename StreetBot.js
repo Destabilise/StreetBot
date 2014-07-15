@@ -86,10 +86,10 @@ var retrieveFromStorage = function(){
 };
 
 var esBot = {
-        version: "1.1.4",        
+        version: "1.1.5",        
         status: false,
         name: "StreetBot",
-        creator: "TheDestabilise",
+        creator: "TioFrosty",
         loggedInID: null,
         scriptLink: "https://raw.githubusercontent.com/iFrooosty/StreetBot/master/StreetBot.js",
         cmdLink: "http://git.io/245Ppg",
