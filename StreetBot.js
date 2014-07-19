@@ -1527,7 +1527,7 @@ var esBot = {
                                 if( !esBot.commands.executable(this.rank, chat) ) return void (0);
                                 else{
                                     if(typeof esBot.roomSettings.fbLink === "string")
-                                        API.sendChat('/me [' + chat.from + '] Like us on facebook: ' + esBot.roomSettings.fbLink);
+                                        API.sendChat('/me [' + chat.from + '] Entre no nosso grupo : ' + esBot.roomSettings.fbLink);
                                 };                              
                         },
                 },
