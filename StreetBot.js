@@ -94,21 +94,21 @@ var esBot = {
         scriptLink: "https://raw.githubusercontent.com/iFrooosty/StreetBot/master/StreetBot.js",
         cmdLink: "http://git.io/245Ppg",
         roomSettings: {
-            maximumAfk: 120,
-            afkRemoval: true,                
+            maximumAfk: 9999,
+            afkRemoval: false,                
             maximumDc: 60,                                
             bouncerPlus: true,                
             lockdownEnabled: false,                
-            lockGuard: false,
-            maximumLocktime: 10,                
-            cycleGuard: true,
-            maximumCycletime: 10,                
+            lockGuard: true,
+            maximumLocktime: 4,                
+            cycleGuard: false,
+            maximumCycletime: 9999,                
             timeGuard: true,
-            maximumSongLength: 10,                
+            maximumSongLength: 6,                
             autodisable: true,                
             commandCooldown: 30,
             usercommandsEnabled: true,                
-            lockskipPosition: 3,
+            lockskipPosition: 1,
             lockskipReasons: [ ["tema", "Esta música não entra nos temas da sala. "], 
                     ["op", "Esta Musica esta na lista OP. "], 
                     ["history", "Esta música esta no historico. "], 
@@ -128,9 +128,9 @@ var esBot = {
             opLink: null,
             rulesLink: null,
             themeLink: null,
-            fbLink: null,
+            fbLink: "http://bit.ly/DTMGRUPO",
             youtubeLink: null,
-            website: null,
+            website: "http://bit.ly/DTMPAGE",
             intervalMessages: [],
             messageInterval: 5,
             songstats: true,                      
@@ -316,7 +316,7 @@ var esBot = {
             },        
             dclookup: function(id){
                 var user = esBot.userUtilities.lookupUser(id);                        
-                if(typeof user === 'boolean') return ('/me User not found.');
+                if(typeof user === 'boolean') return ('/me Usuario não encontrado.');
                 var name = user.username;
                 if(user.lastDC.time === null) return ('/me @' + name + ' Não se desconectou durante o meu tempo :confounded: ');
                 var dc = user.lastDC.time;
@@ -543,7 +543,7 @@ var esBot = {
                 var jt = u.jointime;
                 var t = Date.now() - jt;
                 if(t < 10*1000) greet = false;
-                else var welcome = "Welcome back, ";
+                else var welcome = "Seja Bem-Vindo Denovo, ";
             }
             else{
                 esBot.room.users.push(new esBot.User(user.id, user.username));
@@ -1144,12 +1144,12 @@ var esBot = {
                                     if(esBot.roomSettings.afkRemoval){
                                         esBot.roomSettings.afkRemoval = !esBot.roomSettings.afkRemoval;
                                         clearInterval(esBot.room.afkInterval);
-                                        API.sendChat('/me [@' + chat.from + '] Turned afk removal off.');
+                                        API.sendChat('/me [@' + chat.from + '] AFK Remove está desativado.');
                                       }
                                     else {
                                         esBot.roomSettings.afkRemoval = !esBot.roomSettings.afkRemoval;
                                         esBot.room.afkInterval = setInterval(function(){esBot.roomUtilities.afkCheck()}, 2 * 1000);
-                                        API.sendChat('/me [@' + chat.from + '] Turned afk removal on.');
+                                        API.sendChat('/me [@' + chat.from + '] AFK Remove está ativado.');
                                       }
                                 };                              
                         },
@@ -1188,7 +1188,7 @@ var esBot = {
                                     var lastActive = esBot.userUtilities.getLastActivity(user);
                                     var inactivity = Date.now() - lastActive;
                                     var time = esBot.roomUtilities.msToStr(inactivity);
-                                    API.sendChat('/me [@' + chat.from + '] @' + name + ' has been inactive for ' + time + '.');
+                                    API.sendChat('/me [@' + chat.from + '] @' + name + ' esteve inativo durante ' + time + '.');
                                 };                              
                         },
                 },
@@ -1203,11 +1203,11 @@ var esBot = {
                                     if(esBot.roomSettings.autoskip){
                                         esBot.roomSettings.autoskip = !esBot.roomSettings.autoskip;
                                         clearTimeout(esBot.room.autoskipTimer);
-                                        return API.sendChat('/me [@' + chat.from + '] Autoskip disabled.');
+                                        return API.sendChat('/me [@' + chat.from + '] Autoskip desativado.');
                                     }
                                     else{
                                         esBot.roomSettings.autoskip = !esBot.roomSettings.autoskip;
-                                        return API.sendChat('/me [@' + chat.from + '] Autoskip enabled.');
+                                        return API.sendChat('/me [@' + chat.from + '] Autoskip ativado.');
                                     }
                                 };                              
                         },
@@ -1249,7 +1249,7 @@ var esBot = {
                                     var name = msg.substr(cmd.length + 2);
                                     var user = esBot.userUtilities.lookupUserName(name);
                                     if(typeof user === 'boolean') return API.sendChat('/me [@' + chat.from + '] Invalid user specified.');
-                                    //API.sendChat('/me [' + chat.from + ' whips out the banhammer :hammer:]');
+                                    API.sendChat('/me [' + chat.from + ' whips out the banhammer :hammer:]');
                                     API.moderateBanUser(user.id, 1, API.BAN.DAY);
                                 };                              
                         },
