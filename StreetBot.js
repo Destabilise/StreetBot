@@ -19,54 +19,54 @@
 (function(){
 
 var kill = function(){
-    clearInterval(esBot.room.autodisableInterval);
-    clearInterval(esBot.room.afkInterval);
-    esBot.status = false;
-    console.log("StreetBot está agora offline :joy: ");
+    clearInterval(superBot.room.autodisableInterval);
+    clearInterval(superBot.room.afkInterval);
+    superBot.status = false;
+    console.log("SuperBot está agora offline :joy: ");
 }
 
 var storeToStorage = function(){
     if(navigator.userAgent.toLowerCase().indexOf("chrome")<0) return;
-    localStorage.setItem("esBotRoomSettings", JSON.stringify(esBot.roomSettings));
-    localStorage.setItem("esBotRoom", JSON.stringify(esBot.room));
-    var esBotStorageInfo = {
+    localStorage.setItem("superBotRoomSettings", JSON.stringify(superBot.roomSettings));
+    localStorage.setItem("superBotRoom", JSON.stringify(superBot.room));
+    var superBotStorageInfo = {
         time: Date.now(),
         stored: true,
-        version: esBot.version,
+        version: superBot.version,
     };
-    localStorage.setItem("esBotStorageInfo", JSON.stringify(esBotStorageInfo));
+    localStorage.setItem("superBotStorageInfo", JSON.stringify(superBotStorageInfo));
 
 };
 
 var retrieveFromStorage = function(){
     if(navigator.userAgent.toLowerCase().indexOf("chrome")<0) return;
-    var info = localStorage.getItem("esBotStorageInfo");
+    var info = localStorage.getItem("superBotStorageInfo");
     if(info === null) API.chatLog("No previous data found.");
     else{
-        var settings = JSON.parse(localStorage.getItem("esBotRoomSettings"));
-        var room = JSON.parse(localStorage.getItem("esBotRoom"));
+        var settings = JSON.parse(localStorage.getItem("superBotRoomSettings"));
+        var room = JSON.parse(localStorage.getItem("superBotRoom"));
         var elapsed = Date.now() - JSON.parse(info).time;
         if((elapsed < 1*60*60*1000)){
             API.chatLog('Retrieving previously stored data.');
             for(var prop in settings){
-                esBot.roomSettings[prop] = settings[prop];
+                superBot.roomSettings[prop] = settings[prop];
             }
-            //esBot.roomSettings = settings;
-            esBot.room.users = room.users;
-            esBot.room.afkList = room.afkList;
-            esBot.room.historyList = room.historyList;
-            esBot.room.mutedUsers = room.mutedUsers;
-            esBot.room.autoskip = room.autoskip;
-            esBot.room.roomstats = room.roomstats;
-            esBot.room.messages = room.messages;
-            esBot.room.queue = room.queue;
+            //superBot.roomSettings = settings;
+            superBot.room.users = room.users;
+            superBot.room.afkList = room.afkList;
+            superBot.room.historyList = room.historyList;
+            superBot.room.mutedUsers = room.mutedUsers;
+            superBot.room.autoskip = room.autoskip;
+            superBot.room.roomstats = room.roomstats;
+            superBot.room.messages = room.messages;
+            superBot.room.queue = room.queue;
             API.chatLog('Previously stored data succesfully retrieved.');
         }
     }
     var json_sett = null;
     var roominfo = document.getElementById("room-info");
     var info = roominfo.innerText;
-    var ref_bot = "@StreetBot=";
+    var ref_bot = "@SuperBot=";
     var ind_ref = info.indexOf(ref_bot);
     if(ind_ref > 0){
         var link = info.substring(ind_ref + ref_bot.length, info.length);
@@ -77,7 +77,7 @@ var retrieveFromStorage = function(){
             if(json !== null && typeof json !== "undefined"){
                 var json_sett = JSON.parse(json);
                 for(var prop in json_sett){
-                    esBot.roomSettings[prop] = json_sett[prop];
+                    superBot.roomSettings[prop] = json_sett[prop];
                 }
             }
         });
@@ -85,10 +85,10 @@ var retrieveFromStorage = function(){
 
 };
 
-var esBot = {
+var superBot = {
         version: "1.1.5",        
         status: false,
-        name: "StreetBot",
+        name: "SuperBot",
         creator: "TioFrosty",
         loggedInID: null,
         scriptLink: "https://raw.githubusercontent.com/iFrooosty/StreetBot/master/StreetBot.js",
@@ -148,7 +148,7 @@ var esBot = {
             autoskipTimer: null,
             autodisableInterval: null,
             autodisableFunc: function(){
-                if(esBot.status && esBot.roomSettings.autodisable){
+                if(superBot.status && superBot.roomSettings.autodisable){
                     API.sendChat('!afkdisable');
                     API.sendChat('!joindisable');
                 }
@@ -181,21 +181,21 @@ var esBot = {
                 participants: [],
                 countdown : null,
                 startRoulette: function(){
-                    esBot.room.roulette.rouletteStatus = true;
-                    esBot.room.roulette.countdown = setTimeout(function(){ esBot.room.roulette.endRoulette(); }, 60 * 1000);
+                    superBot.room.roulette.rouletteStatus = true;
+                    superBot.room.roulette.countdown = setTimeout(function(){ superBot.room.roulette.endRoulette(); }, 60 * 1000);
                     API.sendChat("/me A Loteria está aberta agora! Escreva !join para participar!");
                 },
                 endRoulette: function(){
-                    esBot.room.roulette.rouletteStatus = false;
-                    var ind = Math.floor(Math.random() * esBot.room.roulette.participants.length);
-                    var winner = esBot.room.roulette.participants[ind];
-                    esBot.room.roulette.participants = [];
+                    superBot.room.roulette.rouletteStatus = false;
+                    var ind = Math.floor(Math.random() * superBot.room.roulette.participants.length);
+                    var winner = superBot.room.roulette.participants[ind];
+                    superBot.room.roulette.participants = [];
                     var pos = Math.floor((Math.random() * API.getWaitList().length) + 1);
-                    var user = esBot.userUtilities.lookupUser(winner);
+                    var user = superBot.userUtilities.lookupUser(winner);
                     var name = user.username;
                     API.sendChat("/me Um Vencedor foi Escolhido! @" + name + " para a posição " + pos + ".");
                     setTimeout(function(winner){
-                        esBot.userUtilities.moveUser(winner, pos, false);
+                        superBot.userUtilities.moveUser(winner, pos, false);
                     }, 1*1000, winner, pos);
 
                 },
@@ -236,7 +236,7 @@ var esBot = {
             updateDC: function(user){
                 user.lastDC.time = Date.now();
                 user.lastDC.position = user.lastKnownPosition;
-                user.lastDC.songCount = esBot.room.roomstats.songCount;
+                user.lastDC.songCount = superBot.room.roomstats.songCount;
                 },                
             setLastActivity: function(user) {
                 user.lastActivity = Date.now();
@@ -253,23 +253,23 @@ var esBot = {
                 user.afkWarningCount = value;
                 },        
             lookupUser: function(id){
-                for(var i = 0; i < esBot.room.users.length; i++){
-                        if(esBot.room.users[i].id === id){                                        
-                                return esBot.room.users[i];
+                for(var i = 0; i < superBot.room.users.length; i++){
+                        if(superBot.room.users[i].id === id){                                        
+                                return superBot.room.users[i];
                         }
                 }
                 return false;
             },                
             lookupUserName: function(name){
-                for(var i = 0; i < esBot.room.users.length; i++){
-                        if(esBot.userUtilities.getUser(esBot.room.users[i]).username === name){
-                            return esBot.room.users[i];
+                for(var i = 0; i < superBot.room.users.length; i++){
+                        if(superBot.userUtilities.getUser(superBot.room.users[i]).username === name){
+                            return superBot.room.users[i];
                         }
                 }
                 return false;
             },                
             voteRatio: function(id){
-                var user = esBot.userUtilities.lookupUser(id);
+                var user = superBot.userUtilities.lookupUser(id);
                 var votes = user.votes;
                 if(votes.meh=== 0) votes.ratio = 1;
                 else votes.ratio = (votes.woot / votes.meh).toFixed(2);
@@ -281,7 +281,7 @@ var esBot = {
                 return u.permission;
             },                
             moveUser: function(id, pos, priority){
-                var user = esBot.userUtilities.lookupUser(id);
+                var user = superBot.userUtilities.lookupUser(id);
                 var wlist = API.getWaitList();
                 if(API.getWaitListPosition(id) === -1){                    
                     if (wlist.length < 50){
@@ -292,30 +292,30 @@ var esBot = {
                     }                            
                     else{
                         var alreadyQueued = -1;
-                        for (var i = 0; i < esBot.room.queue.id.length; i++){
-                                if(esBot.room.queue.id[i] === id) alreadyQueued = i;
+                        for (var i = 0; i < superBot.room.queue.id.length; i++){
+                                if(superBot.room.queue.id[i] === id) alreadyQueued = i;
                         }
                         if(alreadyQueued !== -1){
-                            esBot.room.queue.position[alreadyQueued] = pos;
-                            return API.sendChat('/me O utilizador já está sendo adicionado! Movido para a posição desejada para ' + esBot.room.queue.position[alreadyQueued] + '.');
+                            superBot.room.queue.position[alreadyQueued] = pos;
+                            return API.sendChat('/me O utilizador já está sendo adicionado! Movido para a posição desejada para ' + superBot.room.queue.position[alreadyQueued] + '.');
                         }
-                        esBot.roomUtilities.booth.lockBooth();
+                        superBot.roomUtilities.booth.lockBooth();
                         if(priority){
-                            esBot.room.queue.id.unshift(id);
-                            esBot.room.queue.position.unshift(pos);
+                            superBot.room.queue.id.unshift(id);
+                            superBot.room.queue.position.unshift(pos);
                         }
                         else{
-                            esBot.room.queue.id.push(id);
-                            esBot.room.queue.position.push(pos);
+                            superBot.room.queue.id.push(id);
+                            superBot.room.queue.position.push(pos);
                         }
                         var name = user.username;
-                        return API.sendChat('/me Added @' + name + ' to the queue. Current queue: ' + esBot.room.queue.position.length + '.');
+                        return API.sendChat('/me Adicionando @' + name + ' a lista. Lista Atual : ' + superBot.room.queue.position.length + '.');
                     }
                 }
                 else API.moderateMoveDJ(id, pos);                    
             },        
             dclookup: function(id){
-                var user = esBot.userUtilities.lookupUser(id);                        
+                var user = superBot.userUtilities.lookupUser(id);                        
                 if(typeof user === 'boolean') return ('/me Usuario não encontrado.');
                 var name = user.username;
                 if(user.lastDC.time === null) return ('/me @' + name + ' Não se desconectou durante o meu tempo :confounded: ');
@@ -324,14 +324,14 @@ var esBot = {
                 if(pos === null) return ("/me A Lista de espera precisa de ser atualizada pelo menos uma vez para registrar a ultima posição do utilizador");
                 var timeDc = Date.now() - dc;
                 var validDC = false;
-                if(esBot.roomSettings.maximumDc * 60 * 1000 > timeDc){
+                if(superBot.roomSettings.maximumDc * 60 * 1000 > timeDc){
                     validDC = true;
                 }                        
-                var time = esBot.roomUtilities.msToStr(timeDc);
-                if(!validDC) return ("/me @" + esBot.userUtilities.getUser(user).username + ", o seu ultimo DC foi a muito tempo atrás : " + time + ".");
-                var songsPassed = esBot.room.roomstats.songCount - user.lastDC.songCount;
-                var afksRemoved = 0;
-                var afkList = esBot.room.afkList;
+                var time = superBot.roomUtilities.msToStr(timeDc);
+                if(!validDC) return ("/me @" + superBot.userUtilities.getUser(user).username + ", o seu ultimo DC foi a muito tempo atrás : " + time + ".");
+                var songsPassed = superBot.room.roomstats.songCount - user.lastDC.songCount;
+                var afksRemoved = 0;superBot
+                var afkList = superBot.room.afkList;
                 for(var i = 0; i < afkList.length; i++){
                     var timeAfk = afkList[i][1];
                     var posAfk = afkList[i][2];
@@ -341,8 +341,8 @@ var esBot = {
                 }
                 var newPosition = user.lastDC.position - songsPassed - afksRemoved;
                 if(newPosition <= 0) newPosition = 1;
-                var msg = '/me @' + esBot.userUtilities.getUser(user).username + ' Desconectou-se ' + time + ' atrás e deveria estar na posição ' + newPosition + '.';
-                esBot.userUtilities.moveUser(user.id, newPosition, true);
+                var msg = '/me @' + superBot.userUtilities.getUser(user).username + ' Desconectou-se ' + time + ' atrás e deveria estar na posição ' + newPosition + '.';
+                superBot.userUtilities.moveUser(user.id, newPosition, true);
                 return msg;             
             },              
         },
@@ -414,38 +414,38 @@ var esBot = {
                 lockTimer: setTimeout(function(){},1000),                        
                 locked: false,                        
                 lockBooth: function(){
-                    API.moderateLockWaitList(!esBot.roomUtilities.booth.locked);
-                    esBot.roomUtilities.booth.locked = false;
-                    if(esBot.roomSettings.lockGuard){
-                        esBot.roomUtilities.booth.lockTimer = setTimeout(function (){
-                            API.moderateLockWaitList(esBot.roomUtilities.booth.locked);
-                        },esBot.roomSettings.maximumLocktime * 60 * 1000);
+                    API.moderateLockWaitList(!superBot.roomUtilities.booth.locked);
+                    superBot.roomUtilities.booth.locked = false;
+                    if(superBot.roomSettings.lockGuard){
+                        superBot.roomUtilities.booth.lockTimer = setTimeout(function (){
+                            API.moderateLockWaitList(superBot.roomUtilities.booth.locked);
+                        },superBot.roomSettings.maximumLocktime * 60 * 1000);
                     };                        
                 },                        
                 unlockBooth: function() {
-                  API.moderateLockWaitList(esBot.roomUtilities.booth.locked);
-                  clearTimeout(esBot.roomUtilities.booth.lockTimer);
+                  API.moderateLockWaitList(superBot.roomUtilities.booth.locked);
+                  clearTimeout(superBot.roomUtilities.booth.lockTimer);
                 },                
             },                
             afkCheck: function(){
-                if(!esBot.status || !esBot.roomSettings.afkRemoval) return void (0);
-                    var rank = esBot.roomUtilities.rankToNumber(esBot.roomSettings.afkRankCheck);
+                if(!superBot.status || !superBot.roomSettings.afkRemoval) return void (0);
+                    var rank = superBot.roomUtilities.rankToNumber(superBot.roomSettings.afkRankCheck);
                     var djlist = API.getWaitList();
-                    var lastPos = Math.min(djlist.length , esBot.roomSettings.afkpositionCheck);
+                    var lastPos = Math.min(djlist.length , superBot.roomSettings.afkpositionCheck);
                     if(lastPos - 1 > djlist.length) return void (0);
                     for(var i = 0; i < lastPos; i++){
                         if(typeof djlist[i] !== 'undefined'){
                             var id = djlist[i].id;
-                            var user = esBot.userUtilities.lookupUser(id);
+                            var user = superBot.userUtilities.lookupUser(id);
                             if(typeof user !== 'boolean'){
-                                var plugUser = esBot.userUtilities.getUser(user);
+                                var plugUser = superBot.userUtilities.getUser(user);
                                 if(rank !== null && plugUser.permission <= rank){
                                     var name = plugUser.username;
-                                    var lastActive = esBot.userUtilities.getLastActivity(user);
+                                    var lastActive = superBot.userUtilities.getLastActivity(user);
                                     var inactivity = Date.now() - lastActive;
-                                    var time = esBot.roomUtilities.msToStr(inactivity);
+                                    var time = superBot.roomUtilities.msToStr(inactivity);
                                     var warncount = user.afkWarningCount;
-                                    if (inactivity > esBot.roomSettings.maximumAfk * 60 * 1000 ){
+                                    if (inactivity > superBot.roomSettings.maximumAfk * 60 * 1000 ){
                                         if(warncount === 0){
                                             API.sendChat('/me @' + name + ', Você esteve AFK durante ' + time + ', Por favor, responda em 2 minutos ou você será removido da lista.');
                                             user.afkWarningCount = 3;
@@ -464,14 +464,14 @@ var esBot = {
                                             var pos = API.getWaitListPosition(id);
                                             if(pos !== -1){
                                                 pos++;
-                                                esBot.room.afkList.push([id, Date.now(), pos]);
+                                                superBot.room.afkList.push([id, Date.now(), pos]);
                                                 user.lastDC = {
                                                     time: null,
                                                     position: null,
                                                     songCount: 0,
                                                 };
                                                 API.moderateRemoveDJ(id);
-                                                API.sendChat('/me @' + name + ', Você foi removido por estar AFK durante ' + time + '. Você estava na posição ' + pos + '. Envie alguma mensagem pelo menos a cada ' + esBot.roomSettings.maximumAfk + ' minutos se você quiser tocar alguma música.');
+                                                API.sendChat('/me @' + name + ', Você foi removido por estar AFK durante ' + time + '. Você estava na posição ' + pos + '. Envie alguma mensagem pelo menos a cada ' + superBot.roomSettings.maximumAfk + ' minutos se você quiser tocar alguma música.');
                                             }
                                             user.afkWarningCount = 0;
                                         };
@@ -485,53 +485,53 @@ var esBot = {
                 var toggle = $(".cycle-toggle");
                 if(toggle.hasClass("disabled")) {
                     toggle.click();
-                    if(esBot.roomSettings.cycleGuard){
-                    esBot.room.cycleTimer = setTimeout(function(){
-                            if(toggle.hasClass("enabled")) toggle.click();
-                            }, esBot.roomSettings.cycleMaxTime * 60 * 1000);
+                    if(superBot.roomSettings.cycleGuard){
+                    superBot.room.cycleTimer = setTimeout(function(){
+                            if(toggle.hasClass(superBot"enabled")) toggle.click();
+                            }, superBot.roomSettings.cycleMaxTime * 60 * 1000);
                     }        
                 }
                 else {
                     toggle.click();
-                    clearTimeout(esBot.room.cycleTimer);
+                    clearTimeout(superBot.room.cycleTimer);
                 }        
             },
             intervalMessage: function(){
                 var interval;
-                if(esBot.roomSettings.motdEnabled) interval = esBot.roomSettings.motdInterval;
-                else interval = esBot.roomSettings.messageInterval;
-                if((esBot.room.roomstats.songCount % interval) === 0 && esBot.status){
+                if(superBot.roomSettings.motdEnabled) interval = superBot.roomSettings.motdInterval;
+                else interval = superBot.roomSettings.messageInterval;
+                if((superBot.room.roomstats.songCount % interval) === 0 && superBot.status){
                     var msg;
-                    if(esBot.roomSettings.motdEnabled){
-                        msg = esBot.roomSettings.motd;
+                    if(superBot.roomSettings.motdEnabled){
+                        msg = superBot.roomSettings.motd;
                     }
                     else{
-                        if(esBot.roomSettings.intervalMessages.length === 0) return void (0);
-                        var messageNumber = esBot.room.roomstats.songCount % esBot.roomSettings.intervalMessages.length;
-                        msg = esBot.roomSettings.intervalMessages[messageNumber];
+                        if(superBot.roomSettings.intervalMessages.length === 0) return void (0);
+                        var messageNumber = superBot.room.roomstats.songCount % superBot.roomSettings.intervalMessages.length;
+                        msg = superBot.roomSettings.intervalMessages[messageNumber];
                     };                              
                     API.sendChat('/me ' + msg);
                 }
             },      
         },        
         eventChat: function(chat){
-            for(var i = 0; i < esBot.room.users.length;i++){
-                if(esBot.room.users[i].id === chat.fromID){
-                        esBot.userUtilities.setLastActivity(esBot.room.users[i]);
-                        if(esBot.room.users[i].username !== chat.from){
-                                esBot.room.users[i].username = chat.from;
+            for(var i = 0; i < superBot.room.users.length;i++){
+                if(superBot.room.users[i].id === chat.fromID){
+                        superBot.userUtilities.setLastActivity(superBot.room.users[i]);
+                        if(superBot.room.users[i].username !== chat.from){
+                                superBot.room.users[i].username = chat.from;
                         }
                 }                            
             }                        
-            if(esBot.chatUtilities.chatFilter(chat)) return void (0);
-            if( !esBot.chatUtilities.commandCheck(chat) ) 
-                    esBot.chatUtilities.action(chat);             
+            if(superBot.chatUtilities.chatFilter(chat)) return void (0);
+            if( !superBot.chatUtilities.commandCheck(chat) ) 
+                    superBot.chatUtilities.action(chat);             
         },        
         eventUserjoin: function(user){
             var known = false;
             var index = null;
-            for(var i = 0; i < esBot.room.users.length;i++){
-                if(esBot.room.users[i].id === user.id){
+            for(var i = 0; i < superBot.room.users.length;i++){
+                if(superBot.room.users[i].id === user.id){
                         known = true;
                         index = i;
                 }
@@ -2342,9 +2342,9 @@ var esBot = {
                         type: 'exact',
                         functionality: function(chat, cmd){
                                 if(this.type === 'exact' && chat.message.length !== cmd.length) return void (0);
-                                if( !esBot.commands.executable(this.rank, chat) ) return void (0);
+                                if( !superBot.commands.executable(this.rank, chat) ) return void (0);
                                 else{
-                                    esBot.roomUtilities.booth.unlockBooth();
+                                    superBot.roomUtilities.booth.unlockBooth();
                                 };                              
                         },
                 },
@@ -2354,14 +2354,14 @@ var esBot = {
                         type: 'startsWith',
                         functionality: function(chat, cmd){
                                 if(this.type === 'exact' && chat.message.length !== cmd.length) return void (0);
-                                if( !esBot.commands.executable(this.rank, chat) ) return void (0);
+                                if( !superBot.commands.executable(this.rank, chat) ) return void (0);
                                 else{
                                     var msg = chat.message;
-                                    var permFrom = esBot.userUtilities.getPermission(chat.fromID);
+                                    var permFrom = superBot.userUtilities.getPermission(chat.fromID);
                                       
                                     if(msg.indexOf('@') === -1 && msg.indexOf('all') !== -1){
                                         if(permFrom > 2){
-                                            esBot.room.mutedUsers = [];
+                                            superBot.room.mutedUsers = [];
                                             return API.sendChat('/me [@' + chat.from + '] Desmutou Todos.');
                                         }
                                         else return API.sendChat('/me [@' + chat.from + '] Apenas Coordenadores ou + podem desmutar todos de uma vez. :warning: ')
@@ -2370,14 +2370,14 @@ var esBot = {
                                     var from = chat.from;
                                     var name = msg.substr(cmd.length + 2);
 
-                                    var user = esBot.userUtilities.lookupUserName(name);
+                                    var user = superBot.userUtilities.lookupUserName(name);
                                       
                                     if(typeof user === 'boolean') return API.sendChat("/me Usuario Invalido. :warning:");
                                     
-                                    var permUser = esBot.userUtilities.getPermission(user.id);
+                                    var permUser = superBot.userUtilities.getPermission(user.id);
                                     if(permFrom > permUser){
 
-                                        var muted = esBot.room.mutedUsers;
+                                        var muted = superBot.room.mutedUsers;
                                         var wasMuted = false;
                                         var indexMuted = -1;
                                         for(var i = 0; i < muted.length; i++){
@@ -2388,7 +2388,7 @@ var esBot = {
 
                                         }
                                         if(!wasMuted) return API.sendChat("/me [@" + chat.from + "] esse usuario não foi mutado. :warning: ");
-                                        esBot.room.mutedUsers.splice(indexMuted);
+                                        superBot.room.mutedUsers.splice(indexMuted);
                                         API.sendChat('/me [@' + chat.from + '] Desmutou @' + name + '.');
                                     }
                                     else API.sendChat("/me [@" + chat.from + "] :warning: Você não pode Desmutar pessoas com cargo igual ou maior que você");
@@ -2402,13 +2402,13 @@ var esBot = {
                         type: 'startsWith',
                         functionality: function(chat, cmd){
                                 if(this.type === 'exact' && chat.message.length !== cmd.length) return void (0);
-                                if( !esBot.commands.executable(this.rank, chat) ) return void (0);
+                                if( !superBotsuperBot.commands.executable(this.rank, chat) ) return void (0);
                                 else{
                                     var msg = chat.message;
                                     var cd = msg.substring(cmd.length + 1);
                                     if(!isNaN(cd)){
-                                        esBot.roomSettings.commandCooldown = cd;
-                                        return API.sendChat('/me [@' + chat.from + '] O CoolDown para comandos de users está agora definido para ' + esBot.roomSettings.commandCooldown + ' segundos.');
+                                        superBotsuperBot.roomSettings.commandCooldown = cd;
+                                        return API.sendChat('/me [@' + chat.from + '] O CoolDown para comandos de users está agora definido para ' + superBot.roomSettings.commandCooldown + ' segundos.');
                                     }
                                     else return API.sendChat('/me [@' + chat.from + '] :warning: CoolDown Definido Incorreto.');
                                 
@@ -2421,15 +2421,15 @@ var esBot = {
                         type: 'exact',
                         functionality: function(chat, cmd){
                                 if(this.type === 'exact' && chat.message.length !== cmd.length) return void (0);
-                                if( !esBot.commands.executable(this.rank, chat) ) return void (0);
+                                if( !superBotsuperBot.commands.executable(this.rank, chat) ) return void (0);
                                 else{
-                                    if(esBot.roomSettings.usercommandsEnabled){
+                                    if(superBotsuperBot.roomSettings.usercommandsEnabled){
                                         API.sendChat('/me [@' + chat.from + '] :warning: Comandos de User desativados.');
-                                        esBot.roomSettings.usercommandsEnabled = !esBot.roomSettings.usercommandsEnabled;
+                                        superBotsuperBot.roomSettings.usercommandsEnabled = !superBotsuperBot.roomSettings.usercommandsEnabled;
                                     }
                                     else{
                                         API.sendChat('/me [@' + chat.from + '] :warning: Comandos de User ativados .');
-                                        esBot.roomSettings.usercommandsEnabled = !esBot.roomSettings.usercommandsEnabled;
+                                        superBotsuperBot.roomSettings.usercommandsEnabled = !superBotsuperBot.roomSettings.usercommandsEnabled;
                                     }
                                 };                              
                         },
@@ -2440,12 +2440,12 @@ var esBot = {
                         type: 'startsWith',
                         functionality: function(chat, cmd){
                                 if(this.type === 'exact' && chat.message.length !== cmd.length) return void (0);
-                                if( !esBot.commands.executable(this.rank, chat) ) return void (0);
+                                if( !superBotsuperBot.commands.executable(this.rank, chat) ) return void (0);
                                 else{
                                     var msg = chat.message;
                                     if(msg.length === cmd.length) return API.sendChat('[@' + chat.from + '] :warning: Usuario não especificado.');
                                     var name = msg.substring(cmd.length + 2);
-                                    var user = esBot.userUtilities.lookupUserName(name);
+                                    var user = superBotsuperBot.userUtilities.lookupUserName(name);
                                     if(user === false) return API.sendChat('/me [@' + chat.from + '] :warning: Usuario Especificado é Invalido');
                                     var vratio = user.votes;
                                     var ratio = vratio.woot / vratio.meh;
@@ -2459,14 +2459,14 @@ var esBot = {
                         type: 'exact',
                         functionality: function(chat, cmd){
                                 if(this.type === 'exact' && chat.message.length !== cmd.length) return void (0);
-                                if( !esBot.commands.executable(this.rank, chat) ) return void (0);
+                                if( !superBotsuperBot.commands.executable(this.rank, chat) ) return void (0);
                                 else{
-                                    if(esBot.roomSettings.welcome){
-                                        esBot.roomSettings.welcome = !esBot.roomSettings.welcome;
+                                    if(superBotsuperBot.roomSettings.welcome){
+                                        superBotsuperBot.roomSettings.welcome = !superBotsuperBot.roomSettings.welcome;
                                         return API.sendChat('/me [@' + chat.from + '] :warning: Mensagem de Boas-Vindas desativado .');
                                     }
                                     else{
-                                        esBot.roomSettings.welcome = !esBot.roomSettings.welcome;
+                                        superBotsuperBot.roomSettings.welcome = !superBotsuperBot.roomSettings.welcome;
                                         return API.sendChat('/me [@' + chat.from + '] :warning: Mensagem De Boas-Vindas ativado. ');
                                     } 
                                 
@@ -2479,10 +2479,10 @@ var esBot = {
                         type: 'exact',
                         functionality: function(chat, cmd){
                                 if(this.type === 'exact' && chat.message.length !== cmd.length) return void (0);
-                                if( !esBot.commands.executable(this.rank, chat) ) return void (0);
+                                if( !superBotsuperBot.commands.executable(this.rank, chat) ) return void (0);
                                 else{
-                                    if(typeof esBot.roomSettings.website === "string")
-                                        API.sendChat('/me Visite o nosso site : ' + esBot.roomSettings.website);
+                                    if(typeof superBotsuperBot.roomSettings.website === "string")
+                                        API.sendChat('/me Visite o nosso site : ' + superBotsuperBot.roomSettings.website);
                                 };                              
                         },
                 },
@@ -2492,10 +2492,10 @@ var esBot = {
                         type: 'exact',
                         functionality: function(chat, cmd){
                                 if(this.type === 'exact' && chat.message.length !== cmd.length) return void (0);
-                                if( !esBot.commands.executable(this.rank, chat) ) return void (0);
+                                if( !superBotsuperBot.commands.executable(this.rank, chat) ) return void (0);
                                 else{
-                                    if(typeof esBot.roomSettings.youtubeLink === "string")
-                                        API.sendChat('/me [' + chat.from + '] Subscreva-se no nosso canal : ' + esBot.roomSettings.youtubeLink);                                
+                                    if(typeof superBotsuperBot.roomSettings.youtubeLink === "string")
+                                        API.sendChat('/me [' + chat.from + '] Subscreva-se no nosso canal : ' + superBotsuperBot.roomSettings.youtubeLink);                                
                                 };                              
                         },
                 },
@@ -2504,5 +2504,5 @@ var esBot = {
                 
 };
 
-esBot.startup(); 
+superBotsuperBot.startup(); 
 }).call(this);
