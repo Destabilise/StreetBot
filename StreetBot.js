@@ -538,137 +538,137 @@ var superBot = {
             }
             var greet = true;
             if(known){
-                esBot.room.users[index].inRoom = true;
-                var u = esBot.userUtilities.lookupUser(user.id);
+                superBot.room.users[index].inRoom = true;
+                var u = superBot.userUtilities.lookupUser(user.id);
                 var jt = u.jointime;
                 var t = Date.now() - jt;
                 if(t < 10*1000) greet = false;
                 else var welcome = "Seja Bem-Vindo Denovo, ";
             }
             else{
-                esBot.room.users.push(new esBot.User(user.id, user.username));
+                superBot.room.users.push(new superBot.User(user.id, user.username));
                 var welcome = "Bem Vindo ";
             }    
-            for(var j = 0; j < esBot.room.users.length;j++){
-                if(esBot.userUtilities.getUser(esBot.room.users[j]).id === user.id){
-                    esBot.userUtilities.setLastActivity(esBot.room.users[j]);
-                    esBot.room.users[j].jointime = Date.now();
+            for(var j = 0; j < superBot.room.users.length;j++){
+                if(superBot.userUtilities.getUser(superBot.room.users[j]).id === user.id){
+                    superBot.userUtilities.setLastActivity(superBot.room.users[j]);
+                    superBot.room.users[j].jointime = Date.now();
                 }
             
             }
-            if(esBot.roomSettings.welcome && greet){
+            if(superBot.roomSettings.welcome && greet){
                 setTimeout(function(){
                     API.sendChat("/me " + welcome + "@" + user.username + " :wave: .");
                 }, 1*1000);
             }               
         },        
         eventUserleave: function(user){
-            for(var i = 0; i < esBot.room.users.length;i++){
-                if(esBot.room.users[i].id === user.id){
-                        esBot.userUtilities.updateDC(esBot.room.users[i]);
-                        esBot.room.users[i].inRoom = false;
+            for(var i = 0; i < superBot.room.users.length;i++){
+                if(superBot.room.users[i].id === user.id){
+                        superBot.userUtilities.updateDC(superBot.room.users[i]);
+                        superBot.room.users[i].inRoom = false;
                 }
             }
         },        
         eventVoteupdate: function(obj){
-            for(var i = 0; i < esBot.room.users.length;i++){
-                if(esBot.room.users[i].id === obj.user.id){
+            for(var i = 0; i < superBot.room.users.length;i++){
+                if(superBot.room.users[i].id === obj.user.id){
                     if(obj.vote === 1){
-                        esBot.room.users[i].votes.woot++;
+                        superBot.room.users[i].votes.woot++;
                     }
                     else{
-                        esBot.room.users[i].votes.meh++;                                        
+                        superBot.room.users[i].votes.meh++;                                        
                     }
                 }
             }               
         },        
         eventCurateupdate: function(obj){
-            for(var i = 0; i < esBot.room.users.length;i++){
-                if(esBot.room.users[i].id === obj.user.id){
-                    esBot.room.users[i].votes.curate++;
+            for(var i = 0; i < superBot.room.users.length;i++){
+                if(superBot.room.users[i].id === obj.user.id){
+                    superBot.room.users[i].votes.curate++;
                 }
             }       
         },        
         eventDjadvance: function(obj){                
             var lastplay = obj.lastPlay;
             if(typeof lastplay === 'undefined') return void (0);
-            if(esBot.roomSettings.songstats) API.sendChat("/me " + lastplay.media._previousAttributes.author + " - " + lastplay.media._previousAttributes.title + ": " + lastplay.score.positive + "W/" + lastplay.score.curates + "G/" + lastplay.score.negative + "M.")
-            esBot.room.roomstats.totalWoots += lastplay.score.positive;
-            esBot.room.roomstats.totalMehs += lastplay.score.negative;
-            esBot.room.roomstats.totalCurates += lastplay.score.curates;
-            esBot.room.roomstats.songCount++;
-            esBot.roomUtilities.intervalMessage();
-            esBot.room.currentDJID = API.getDJ().id;
+            if(superBot.roomSettings.songstats) API.sendChat("/me " + lastplay.media._previousAttributes.author + " - " + lastplay.media._previousAttributes.title + ": " + lastplay.score.positive + "W/" + lastplay.score.curates + "G/" + lastplay.score.negative + "M.")
+            superBot.room.roomstats.totalWoots += lastplay.score.positive;
+            superBot.room.roomstats.totalMehs += lastplay.score.negative;
+            superBot.room.roomstats.totalCurates += lastplay.score.curates;
+            superBot.room.roomstats.songCount++;
+            superBot.roomUtilities.intervalMessage();
+            superBot.room.currentDJID = API.getDJ().id;
             var alreadyPlayed = false;
-            for(var i = 0; i < esBot.room.historyList.length; i++){
-                if(esBot.room.historyList[i][0] === obj.media.cid){
-                    var firstPlayed = esBot.room.historyList[i][1];
-                    var plays = esBot.room.historyList[i].length - 1;
-                    var lastPlayed = esBot.room.historyList[i][plays];
+            for(var i = 0; i < superBot.room.historyList.length; i++){
+                if(superBot.room.historyList[i][0] === obj.media.cid){
+                    var firstPlayed = superBot.room.historyList[i][1];
+                    var plays = superBot.room.historyList[i].length - 1;
+                    var lastPlayed = superBot.room.historyList[i][plays];
                     var now = +new Date();
                     var interfix = '';
                     if(plays > 1) interfix = 's'
-                    API.sendChat('/me :repeat: Esta música foi tocada ' + plays + ' time' + interfix + ' na última ' + esBot.roomUtilities.msToStr(Date.now() - firstPlayed) + ', Foi tocada pela última vez á ' + esBot.roomUtilities.msToStr(Date.now() - lastPlayed) + ' atrás. :repeat: ');
+                    API.sendChat('/me :repeat: Esta música foi tocada ' + plays + ' time' + interfix + ' na última ' + superBot.roomUtilities.msToStr(Date.now() - firstPlayed) + ', Foi tocada pela última vez á ' + superBot.roomUtilities.msToStr(Date.now() - lastPlayed) + ' atrás. :repeat: ');
 
-                    esBot.room.historyList[i].push(+new Date());
+                    superBot.room.historyList[i].push(+new Date());
                     alreadyPlayed = true;
                 }
             }
             if(!alreadyPlayed){
-                esBot.room.historyList.push([obj.media.cid, +new Date()]);
+                superBot.room.historyList.push([obj.media.cid, +new Date()]);
             }
-            esBot.room.historyList;
+            superBot.room.historyList;
             var newMedia = obj.media;
-            if(esBot.roomSettings.timeGuard && newMedia.duration > esBot.roomSettings.maximumSongLength*60  && !esBot.room.roomevent){
+            if(superBot.roomSettings.timeGuard && newMedia.duration > superBot.roomSettings.maximumSongLength*60  && !superBot.room.roomevent){
                 var name = obj.dj.username;
-                API.sendChat('/me @' + name + ', a sua música é maior que ' + esBot.roomSettings.maximumSongLength + ' minutos, você precisa de autorização para tocar musicas longas.');
+                API.sendChat('/me @' + name + ', a sua música é maior que ' + superBot.roomSettings.maximumSongLength + ' minutos, você precisa de autorização para tocar musicas longas.');
                 API.moderateForceSkip();
             }
-            var user = esBot.userUtilities.lookupUser(obj.dj.id);
+            var user = superBot.userUtilities.lookupUser(obj.dj.id);
             if(user.ownSong){
                 API.sendChat('/me :up: @' + user.username + ' Têm autorização para tocar as suas proprias produções!');
                 user.ownSong = false;
             }
             user.lastDC.position = null;
-            clearTimeout(esBot.room.autoskipTimer);
-            if(esBot.room.autoskip){
+            clearTimeout(superBot.room.autoskipTimer);
+            if(superBot.room.autoskip){
                 var remaining = media.duration * 1000; 
-                esBot.room.autoskipTimer = setTimeout(function(){ API.moderateForceSkip(); }, remaining - 500);
+                superBot.room.autoskipTimer = setTimeout(function(){ API.moderateForceSkip(); }, remaining - 500);
             }
             storeToStorage();
 
         },
         eventWaitlistupdate: function(users){
             if(users.length < 50){
-                if(esBot.room.queue.id.length > 0 && esBot.room.queueable){
-                    esBot.room.queueable = false;
-                    setTimeout(function(){esBot.room.queueable = true;}, 500);
-                    esBot.room.queueing++;
+                if(superBot.room.queue.id.length > 0 && superBot.room.queueable){
+                    superBot.room.queueable = false;
+                    setTimeout(function(){superBot.room.queueable = true;}, 500);
+                    superBot.room.queueing++;
                     var id, pos;
                     setTimeout(
                         function(){
-                            id = esBot.room.queue.id.splice(0,1)[0];
-                            pos = esBot.room.queue.position.splice(0,1)[0];
+                            id = superBot.room.queue.id.splice(0,1)[0];
+                            pos = superBot.room.queue.position.splice(0,1)[0];
                             API.moderateAddDJ(id,pos);
                             setTimeout(
                                 function(id, pos){
                                 API.moderateMoveDJ(id, pos);
-                                esBot.room.queueing--;
-                                if(esBot.room.queue.id.length === 0) setTimeout(function(){
-                                    esBot.roomUtilities.booth.unlockBooth();
+                                superBot.room.queueing--;
+                                if(superBot.room.queue.id.length === 0) setTimeout(function(){
+                                    superBot.roomUtilities.booth.unlockBooth();
                                 },1000);
                             },1000,id,pos);
-                    },1000 + esBot.room.queueing * 2500);
+                    },1000 + superBot.room.queueing * 2500);
                 }
             }            
             for(var i = 0; i < users.length; i++){
-                var user = esBot.userUtilities.lookupUser(users[i].id)
-                esBot.userUtilities.updatePosition(user, users[i].wlIndex + 1);
+                var user = superBot.userUtilities.lookupUser(users[i].id)
+                superBot.userUtilities.updatePosition(user, users[i].wlIndex + 1);
             }
         },
         chatcleaner: function(chat){
-            if(!esBot.roomSettings.filterChat) return false;
-            if(esBot.userUtilities.getPermission(chat.fromID) > 1) return false;
+            if(!superBot.roomSettings.filterChat) return false;
+            if(superBot.userUtilities.getPermission(chat.fromID) > 1) return false;
             var msg = chat.message;
             var containsLetters = false;
             for(var i = 0; i < msg.length; i++){
@@ -695,14 +695,14 @@ var superBot = {
                     API.sendChat("/me @" + chat.from + ", Não peça para pular.");
                     return true;
                     }
-            for (var j = 0; j < esBot.chatUtilities.spam.length; j++){
-                if(msg === esBot.chatUtilities.spam[j]){
+            for (var j = 0; j < superBot.chatUtilities.spam.length; j++){
+                if(msg === superBot.chatUtilities.spam[j]){
                     API.sendChat("/me @" + chat.from + ",por favor não faça spam.");
                     return true;
                     }
                 }
-            for (var i = 0; i < esBot.chatUtilities.beggarSentences.length; i++){
-                if(msg.indexOf(esBot.chatUtilities.beggarSentences[i]) >= 0){
+            for (var i = 0; i < superBot.chatUtilities.beggarSentences.length; i++){
+                if(msg.indexOf(superBot.chatUtilities.beggarSentences[i]) >= 0){
                     API.sendChat("/me @" + chat.from + ",por favor não peça fans.");
                     return true;
                 }
@@ -712,23 +712,23 @@ var superBot = {
         chatUtilities: {        
             chatFilter: function(chat){
                 var msg = chat.message;
-                var perm = esBot.userUtilities.getPermission(chat.fromID);
-                var user = esBot.userUtilities.lookupUser(chat.fromID);
+                var perm = superBot.userUtilities.getPermission(chat.fromID);
+                var user = superBot.userUtilities.lookupUser(chat.fromID);
                 var isMuted = false;
-                for(var i = 0; i < esBot.room.mutedUsers.length; i++){
-                                if(esBot.room.mutedUsers[i] === chat.fromID) isMuted = true;
+                for(var i = 0; i < superBot.room.mutedUsers.length; i++){
+                                if(superBot.room.mutedUsers[i] === chat.fromID) isMuted = true;
                         }
                 if(isMuted){
                     API.moderateDeleteChat(chat.chatID);
                     return true;
                     };
-                if(esBot.roomSettings.lockdownEnabled){
+                if(superBot.roomSettings.lockdownEnabled){
                                 if(perm === 0){    
                                         API.moderateDeleteChat(chat.chatID);
                                         return true;
                                 }
                         };
-                if(esBot.chatcleaner(chat)){
+                if(superBot.chatcleaner(chat)){
                     API.moderateDeleteChat(chat.chatID);
                     return true;
                 }
@@ -763,14 +763,14 @@ var superBot = {
                         else cmd = chat.message.substring(0,space);
                 }
                 else return false;
-                var userPerm = esBot.userUtilities.getPermission(chat.fromID);
+                var userPerm = superBot.userUtilities.getPermission(chat.fromID);
                 if(chat.message !== "!join" && chat.message !== "!leave"){                            
-                    if(userPerm === 0 && !esBot.room.usercommand) return void (0);
-                    if(!esBot.room.allcommand) return void (0);
+                    if(userPerm === 0 && !superBot.room.usercommand) return void (0);
+                    if(!superBot.room.allcommand) return void (0);
                 }                            
-                if(chat.message === '!eta' && esBot.roomSettings.etaRestriction){
+                if(chat.message === '!eta' && superBot.roomSettings.etaRestriction){
                     if(userPerm < 2){
-                        var u = esBot.userUtilities.lookupUser(chat.fromID);
+                        var u = superBot.userUtilities.lookupUser(chat.fromID);
                         if(u.lastEta !== null && (Date.now() - u.lastEta) < 1*60*60*1000){
                             API.moderateDeleteChat(chat.chatID);
                             return void (0);
@@ -780,94 +780,94 @@ var superBot = {
                 }                            
                 var executed = false;                            
                 switch(cmd){
-                    case '!active':             esBot.commands.activeCommand.functionality(chat, '!active');                        executed = true; break;
-                    case '!add':                esBot.commands.addCommand.functionality(chat, '!add');                              executed = true; break;
-                    case '!afklimit':           esBot.commands.afklimitCommand.functionality(chat, '!afklimit');                    executed = true; break;
-                    case '!afkremoval':         esBot.commands.afkremovalCommand.functionality(chat, '!afkremoval');                executed = true; break;
-                    case '!afkreset':           esBot.commands.afkresetCommand.functionality(chat, '!afkreset');                    executed = true; break;
-                    case '!afktime':            esBot.commands.afktimeCommand.functionality(chat, '!afktime');                      executed = true; break;
-                    case '!autoskip':           esBot.commands.autoskipCommand.functionality(chat, '!autoskip');                    executed = true; break;
-                    case '!autowoot':           esBot.commands.autowootCommand.functionality(chat, '!autowoot');                    executed = true; break;
-                    case '!ba':                 esBot.commands.baCommand.functionality(chat, '!ba');                                executed = true; break;
-                    case '!ban':                esBot.commands.banCommand.functionality(chat, '!ban');                              executed = true; break;
-                    case '!bouncer+':           esBot.commands.bouncerPlusCommand.functionality(chat, '!bouncer+');                 executed = true; break;
-                    case '!clearchat':          esBot.commands.clearchatCommand.functionality(chat, '!clearchat');                  executed = true; break;
-                    case '!commands':           esBot.commands.commandsCommand.functionality(chat, '!commands');                    executed = true; break;
-                    case '!cookie':             esBot.commands.cookieCommand.functionality(chat, '!cookie');                        executed = true; break;
-                    case '!cycle':              esBot.commands.cycleCommand.functionality(chat, '!cycle');                          executed = true; break;
-                    case '!cycleguard':         esBot.commands.cycleguardCommand.functionality(chat, '!cycleguard');                executed = true; break;
-                    case '!cycletimer':         esBot.commands.cycletimerCommand.functionality(chat, '!cycletimer');                executed = true; break;
-                    case '!dclookup':           esBot.commands.dclookupCommand.functionality(chat, '!dclookup');                    executed = true; break;
-                    case '!dc':                 esBot.commands.dclookupCommand.functionality(chat, '!dc');                          executed = true; break;
-                    case '!emoji':              esBot.commands.emojiCommand.functionality(chat, '!emoji');                          executed = true; break;
-                    case '!english':            esBot.commands.englishCommand.functionality(chat, '!english');                      executed = true; break;
-                    case '!eta':                esBot.commands.etaCommand.functionality(chat, '!eta');                              executed = true; break;
-                    case '!fb':                 esBot.commands.fbCommand.functionality(chat, '!fb');                                executed = true; break;
-                    case '!filter':             esBot.commands.filterCommand.functionality(chat, '!filter');                        executed = true; break;
-                    case '!join':               esBot.commands.joinCommand.functionality(chat, '!join');                            executed = true; break;
-                    case '!jointime':           esBot.commands.jointimeCommand.functionality(chat, '!jointime');                    executed = true; break;
-                    case '!kick':               esBot.commands.kickCommand.functionality(chat, '!kick');                            executed = true; break;
-                    case '!kill':               esBot.commands.killCommand.functionality(chat, '!kill');                            executed = true; break;
-                    case '!leave':              esBot.commands.leaveCommand.functionality(chat, '!leave');                          executed = true; break;
-                    case '!link':               esBot.commands.linkCommand.functionality(chat, '!link');                            executed = true; break;
-                    case '!lock':               esBot.commands.lockCommand.functionality(chat, '!lock');                            executed = true; break;
-                    case '!lockdown':           esBot.commands.lockdownCommand.functionality(chat, '!lockdown');                    executed = true; break;
-                    case '!lockguard':          esBot.commands.lockguardCommand.functionality(chat, '!lockguard');                  executed = true; break;
-                    case '!lockskip':           esBot.commands.lockskipCommand.functionality(chat, '!lockskip');                    executed = true; break;
-                    case '!lockskippos':        esBot.commands.lockskipposCommand.functionality(chat, '!lockskippos');              executed = true; break;
-                    case '!locktimer':          esBot.commands.locktimerCommand.functionality(chat, '!locktimer');                  executed = true; break;
-                    case '!maxlength':          esBot.commands.maxlengthCommand.functionality(chat, '!maxlength');                  executed = true; break;
-                    case '!motd':               esBot.commands.motdCommand.functionality(chat, '!motd');                            executed = true; break;
-                    case '!move':               esBot.commands.moveCommand.functionality(chat, '!move');                            executed = true; break;
-                    case '!mute':               esBot.commands.muteCommand.functionality(chat, '!mute');                            executed = true; break;
-                    case '!op':                 esBot.commands.opCommand.functionality(chat, '!op');                                executed = true; break;
-                    case '!ping':               esBot.commands.pingCommand.functionality(chat, '!ping');                            executed = true; break;
-                    case '!reload':             esBot.commands.reloadCommand.functionality(chat, '!reload');                        executed = true; break;
-                    case '!remove':             esBot.commands.removeCommand.functionality(chat, '!remove');                        executed = true; break;
-                    case '!refresh':            esBot.commands.refreshCommand.functionality(chat, '!refresh');                      executed = true; break;
-                    case '!restricteta':        esBot.commands.restrictetaCommand.functionality(chat, '!restricteta');              executed = true; break;
-                    case '!roulette':           esBot.commands.rouletteCommand.functionality(chat, '!roulette');                    executed = true; break;
-                    case '!rules':              esBot.commands.rulesCommand.functionality(chat, '!rules');                          executed = true; break;
-                    case '!sessionstats':       esBot.commands.sessionstatsCommand.functionality(chat, '!sessionstats');            executed = true; break;
-                    case '!skip':               esBot.commands.skipCommand.functionality(chat, '!skip');                            executed = true; break;
-                    case '!status':             esBot.commands.statusCommand.functionality(chat, '!status');                        executed = true; break;
-                    case '!swap':               esBot.commands.swapCommand.functionality(chat, '!swap');
-                    case '!theme':              esBot.commands.themeCommand.functionality(chat, '!theme');                          executed = true; break;
-                    case '!timeguard':          esBot.commands.timeguardCommand.functionality(chat, '!timeguard');                  executed = true; break;
-                    case '!togglemotd':         esBot.commands.togglemotdCommand.functionality(chat, '!togglemotd');                executed = true; break;
-                    case '!unban':              esBot.commands.unbanCommand.functionality(chat, '!unban');                          executed = true; break;
-                    case '!unlock':             esBot.commands.unlockCommand.functionality(chat, '!unlock');                        executed = true; break;
-                    case '!unmute':             esBot.commands.unmuteCommand.functionality(chat, '!unmute');                        executed = true; break;
-                    case '!usercmdcd':          esBot.commands.usercmdcdCommand.functionality(chat, '!usercmdcd');                  executed = true; break;
-                    case '!usercommands':       esBot.commands.usercommandsCommand.functionality(chat, '!usercommands');            executed = true; break;
-                    case '!voteratio':          esBot.commands.voteratioCommand.functionality(chat, '!voteratio');                  executed = true; break;
-                    case '!welcome':            esBot.commands.welcomeCommand.functionality(chat, '!welcome');                      executed = true; break;
-                    case '!website':            esBot.commands.websiteCommand.functionality(chat, '!website');                      executed = true; break;
-                    case '!youtube':            esBot.commands.youtubeCommand.functionality(chat, '!youtube');                      executed = true; break;
-                    //case '!command': esBot.commands.commandCommand.functionality(chat, '!command'); executed = true; break;
+                    case '!active':             superBot.commands.activeCommand.functionality(chat, '!active');                        executed = true; break;
+                    case '!add':                superBot.commands.addCommand.functionality(chat, '!add');                              executed = true; break;
+                    case '!afklimit':           superBot.commands.afklimitCommand.functionality(chat, '!afklimit');                    executed = true; break;
+                    case '!afkremoval':         superBot.commands.afkremovalCommand.functionality(chat, '!afkremoval');                executed = true; break;
+                    case '!afkreset':           superBot.commands.afkresetCommand.functionality(chat, '!afkreset');                    executed = true; break;
+                    case '!afktime':            superBot.commands.afktimeCommand.functionality(chat, '!afktime');                      executed = true; break;
+                    case '!autoskip':           superBot.commands.autoskipCommand.functionality(chat, '!autoskip');                    executed = true; break;
+                    case '!autowoot':           superBot.commands.autowootCommand.functionality(chat, '!autowoot');                    executed = true; break;
+                    case '!ba':                 superBot.commands.baCommand.functionality(chat, '!ba');                                executed = true; break;
+                    case '!ban':                superBot.commands.banCommand.functionality(chat, '!ban');                              executed = true; break;
+                    case '!bouncer+':           superBot.commands.bouncerPlusCommand.functionality(chat, '!bouncer+');                 executed = true; break;
+                    case '!clearchat':          superBot.commands.clearchatCommand.functionality(chat, '!clearchat');                  executed = true; break;
+                    case '!commands':           superBot.commands.commandsCommand.functionality(chat, '!commands');                    executed = true; break;
+                    case '!cookie':             superBot.commands.cookieCommand.functionality(chat, '!cookie');                        executed = true; break;
+                    case '!cycle':              superBot.commands.cycleCommand.functionality(chat, '!cycle');                          executed = true; break;
+                    case '!cycleguard':         superBot.commands.cycleguardCommand.functionality(chat, '!cycleguard');                executed = true; break;
+                    case '!cycletimer':         superBot.commands.cycletimerCommand.functionality(chat, '!cycletimer');                executed = true; break;
+                    case '!dclookup':           superBot.commands.dclookupCommand.functionality(chat, '!dclookup');                    executed = true; break;
+                    case '!dc':                 superBot.commands.dclookupCommand.functionality(chat, '!dc');                          executed = true; break;
+                    case '!emoji':              superBot.commands.emojiCommand.functionality(chat, '!emoji');                          executed = true; break;
+                    case '!english':            superBot.commands.englishCommand.functionality(chat, '!english');                      executed = true; break;
+                    case '!eta':                superBot.commands.etaCommand.functionality(chat, '!eta');                              executed = true; break;
+                    case '!fb':                 superBot.commands.fbCommand.functionality(chat, '!fb');                                executed = true; break;
+                    case '!filter':             superBot.commands.filterCommand.functionality(chat, '!filter');                        executed = true; break;
+                    case '!join':               superBot.commands.joinCommand.functionality(chat, '!join');                            executed = true; break;
+                    case '!jointime':           superBot.commands.jointimeCommand.functionality(chat, '!jointime');                    executed = true; break;
+                    case '!kick':               superBot.commands.kickCommand.functionality(chat, '!kick');                            executed = true; break;
+                    case '!kill':               superBot.commands.killCommand.functionality(chat, '!kill');                            executed = true; break;
+                    case '!leave':              superBot.commands.leaveCommand.functionality(chat, '!leave');                          executed = true; break;
+                    case '!link':               superBot.commands.linkCommand.functionality(chat, '!link');                            executed = true; break;
+                    case '!lock':               superBot.commands.lockCommand.functionality(chat, '!lock');                            executed = true; break;
+                    case '!lockdown':           superBot.commands.lockdownCommand.functionality(chat, '!lockdown');                    executed = true; break;
+                    case '!lockguard':          superBot.commands.lockguardCommand.functionality(chat, '!lockguard');                  executed = true; break;
+                    case '!lockskip':           superBot.commands.lockskipCommand.functionality(chat, '!lockskip');                    executed = true; break;
+                    case '!lockskippos':        superBot.commands.lockskipposCommand.functionality(chat, '!lockskippos');              executed = true; break;
+                    case '!locktimer':          superBot.commands.locktimerCommand.functionality(chat, '!locktimer');                  executed = true; break;
+                    case '!maxlength':          superBot.commands.maxlengthCommand.functionality(chat, '!maxlength');                  executed = true; break;
+                    case '!motd':               superBot.commands.motdCommand.functionality(chat, '!motd');                            executed = true; break;
+                    case '!move':               superBot.commands.moveCommand.functionality(chat, '!move');                            executed = true; break;
+                    case '!mute':               superBot.commands.muteCommand.functionality(chat, '!mute');                            executed = true; break;
+                    case '!op':                 superBot.commands.opCommand.functionality(chat, '!op');                                executed = true; break;
+                    case '!ping':               superBot.commands.pingCommand.functionality(chat, '!ping');                            executed = true; break;
+                    case '!reload':             superBot.commands.reloadCommand.functionality(chat, '!reload');                        executed = true; break;
+                    case '!remove':             superBot.commands.removeCommand.functionality(chat, '!remove');                        executed = true; break;
+                    case '!refresh':            superBot.commands.refreshCommand.functionality(chat, '!refresh');                      executed = true; break;
+                    case '!restricteta':        superBot.commands.restrictetaCommand.functionality(chat, '!restricteta');              executed = true; break;
+                    case '!roulette':           superBot.commands.rouletteCommand.functionality(chat, '!roulette');                    executed = true; break;
+                    case '!rules':              superBot.commands.rulesCommand.functionality(chat, '!rules');                          executed = true; break;
+                    case '!sessionstats':       superBot.commands.sessionstatsCommand.functionality(chat, '!sessionstats');            executed = true; break;
+                    case '!skip':               superBot.commands.skipCommand.functionality(chat, '!skip');                            executed = true; break;
+                    case '!status':             superBot.commands.statusCommand.functionality(chat, '!status');                        executed = true; break;
+                    case '!swap':               superBot.commands.swapCommand.functionality(chat, '!swap');
+                    case '!theme':              superBot.commands.themeCommand.functionality(chat, '!theme');                          executed = true; break;
+                    case '!timeguard':          superBot.commands.timeguardCommand.functionality(chat, '!timeguard');                  executed = true; break;
+                    case '!togglemotd':         superBot.commands.togglemotdCommand.functionality(chat, '!togglemotd');                executed = true; break;
+                    case '!unban':              superBot.commands.unbanCommand.functionality(chat, '!unban');                          executed = true; break;
+                    case '!unlock':             superBot.commands.unlockCommand.functionality(chat, '!unlock');                        executed = true; break;
+                    case '!unmute':             superBot.commands.unmuteCommand.functionality(chat, '!unmute');                        executed = true; break;
+                    case '!usercmdcd':          superBot.commands.usercmdcdCommand.functionality(chat, '!usercmdcd');                  executed = true; break;
+                    case '!usercommands':       superBot.commands.usercommandsCommand.functionality(chat, '!usercommands');            executed = true; break;
+                    case '!voteratio':          superBot.commands.voteratioCommand.functionality(chat, '!voteratio');                  executed = true; break;
+                    case '!welcome':            superBot.commands.welcomeCommand.functionality(chat, '!welcome');                      executed = true; break;
+                    case '!website':            superBot.commands.websiteCommand.functionality(chat, '!website');                      executed = true; break;
+                    case '!youtube':            superBot.commands.youtubeCommand.functionality(chat, '!youtube');                      executed = true; break;
+                    //case '!command': superBot.commands.commandCommand.functionality(chat, '!command'); executed = true; break;
                 }
                 if(executed && userPerm === 0){
-                    esBot.room.usercommand = false;
-                    setTimeout(function(){ esBot.room.usercommand = true; }, esBot.roomSettings.commandCooldown * 1000);                               
+                    superBot.room.usercommand = false;
+                    setTimeout(function(){ superBot.room.usercommand = true; }, superBot.roomSettings.commandCooldown * 1000);                               
                 }
                 if(executed){
                     API.moderateDeleteChat(chat.chatID);
-                    esBot.room.allcommand = false;
-                    setTimeout(function(){ esBot.room.allcommand = true; }, 5 * 1000);
+                    superBot.room.allcommand = false;
+                    setTimeout(function(){ superBot.room.allcommand = true; }, 5 * 1000);
                 }
                 return executed;                                
             },                        
             action: function(chat){
-                var user = esBot.userUtilities.lookupUser(chat.fromID);                        
+                var user = superBot.userUtilities.lookupUser(chat.fromID);                        
                 if (chat.type === 'message') {
-                    for(var j = 0; j < esBot.room.users.length;j++){
-                        if(esBot.userUtilities.getUser(esBot.room.users[j]).id === chat.fromID){
-                            esBot.userUtilities.setLastActivity(esBot.room.users[j]);
+                    for(var j = 0; j < superBot.room.users.length;j++){
+                        if(superBot.userUtilities.getUser(superBot.room.users[j]).id === chat.fromID){
+                            superBot.userUtilities.setLastActivity(superBot.room.users[j]);
                         }
                     
                     }
                 }
-                esBot.room.roomstats.chatmessages++;                                
+                superBot.room.roomstats.chatmessages++;                                
             },
             spam: [
                 'hueh','hu3','brbr','heu','brbr','kkkk','spoder','mafia','zuera','zueira',
@@ -988,44 +988,44 @@ var superBot = {
             }
             this.connectAPI();
             retrieveFromStorage();
-            if(esBot.room.roomstats.launchTime === null){
-                esBot.room.roomstats.launchTime = Date.now();
+            if(superBot.room.roomstats.launchTime === null){
+                superBot.room.roomstats.launchTime = Date.now();
             }
-            for(var j = 0; j < esBot.room.users.length; j++){
-                esBot.room.users[j].inRoom = false;
+            for(var j = 0; j < superBot.room.users.length; j++){
+                superBot.room.users[j].inRoom = false;
             }                        
             var userlist = API.getUsers();
             for(var i = 0; i < userlist.length;i++){
                 var known = false;
                 var ind = null;
-                for(var j = 0; j < esBot.room.users.length; j++){
-                    if(esBot.room.users[j].id === userlist[i].id){
+                for(var j = 0; j < superBot.room.users.length; j++){
+                    if(superBot.room.users[j].id === userlist[i].id){
                         known = true;
                         ind = j;
                     }
                 }
                 if(known){
-                        esBot.room.users[ind].inRoom = true;
+                        superBot.room.users[ind].inRoom = true;
                 }
                 else{
-                        esBot.room.users.push(new esBot.User(userlist[i].id, userlist[i].username));
-                        ind = esBot.room.users.length - 1;
+                        superBot.room.users.push(new superBot.User(userlist[i].id, userlist[i].username));
+                        ind = superBot.room.users.length - 1;
                 }
-                var wlIndex = API.getWaitListPosition(esBot.room.users[ind].id) + 1;
-                esBot.userUtilities.updatePosition(esBot.room.users[ind], wlIndex);
+                var wlIndex = API.getWaitListPosition(superBot.room.users[ind].id) + 1;
+                superBot.userUtilities.updatePosition(superBot.room.users[ind], wlIndex);
             }
-            esBot.room.afkInterval = setInterval(function(){esBot.roomUtilities.afkCheck()}, 10 * 1000);
-            esBot.room.autodisableInterval = setInterval(function(){esBot.room.autodisableFunc();}, 60 * 60 * 1000);
-            esBot.loggedInID = API.getUser().id;            
-            esBot.status = true;
+            superBot.room.afkInterval = setInterval(function(){superBot.roomUtilities.afkCheck()}, 10 * 1000);
+            superBot.room.autodisableInterval = setInterval(function(){superBot.room.autodisableFunc();}, 60 * 60 * 1000);
+            superBot.loggedInID = API.getUser().id;            
+            superBot.status = true;
             API.sendChat('/cap 1');
             API.setVolume(0);
-            API.sendChat('/me ' + esBot.name + ' v' + esBot.version + ' online!');
+            API.sendChat('/me ' + superBot.name + ' v' + superBot.version + ' online!');
         },                        
         commands: {        
             executable: function(minRank, chat){
                 var id = chat.fromID;
-                var perm = esBot.userUtilities.getPermission(id);
+                var perm = superBot.userUtilities.getPermission(id);
                 var minPerm;
                 switch(minRank){
                         case 'admin': minPerm = 7; break;
@@ -1034,7 +1034,7 @@ var superBot = {
                         case 'cohost': minPerm = 4; break;
                         case 'manager': minPerm = 3; break;
                         case 'mod': 
-                                if(esBot.roomSettings.bouncerPlus){
+                                if(superBot.roomSettings.bouncerPlus){
                                     minPerm = 2;
                                 }
                                 else {
@@ -1057,7 +1057,7 @@ var superBot = {
                         type: 'startsWith/exact',
                         functionality: function(chat, cmd){
                                 if(this.type === 'exact' && chat.message.length !== cmd.length) return void (0);
-                                if( !esBot.commands.executable(this.rank, chat) ) return void (0);
+                                if( !superBot.commands.executable(this.rank, chat) ) return void (0);
                                 else{
                                 
                                 };                              
@@ -1070,7 +1070,7 @@ var superBot = {
                         type: 'startsWith',
                         functionality: function(chat, cmd){
                                 if(this.type === 'exact' && chat.message.length !== cmd.length) return void (0);
-                                if( !esBot.commands.executable(this.rank, chat) ) return void (0);
+                                if( !superBot.commands.executable(this.rank, chat) ) return void (0);
                                 else{
                                     var msg = chat.message;
                                     var now = Date.now();
@@ -1081,8 +1081,8 @@ var superBot = {
                                         time = msg.substring(cmd.length + 1);
                                         if(isNaN(time)) return API.sendChat('/me [@' + chat.from + '] Tempo Invalido.');
                                     }
-                                    for(var i = 0; i < esBot.room.users.length; i++){
-                                        userTime = esBot.userUtilities.getLastActivity(esBot.room.users[i]);
+                                    for(var i = 0; i < superBot.room.users.length; i++){
+                                        userTime = superBot.userUtilities.getLastActivity(superBot.room.users[i]);
                                         if((now - userTime) <= (time * 60 * 1000)){
                                         chatters++;
                                         }
@@ -1097,7 +1097,7 @@ var superBot = {
                         type: 'startsWith',
                         functionality: function(chat, cmd){
                                 if(this.type === 'exact' && chat.message.length !== cmd.length) return void (0);
-                                if( !esBot.commands.executable(this.rank, chat) ) return void (0);
+                                if( !superBot.commands.executable(this.rank, chat) ) return void (0);
                                 else{
                                     var msg = chat.message;
                                     if(msg.length === cmd.length) return API.sendChat('/me [@' + chat.from + '] Nenhum Usuario Especificado.');
@@ -1105,10 +1105,10 @@ var superBot = {
                                     var user = esBot.userUtilities.lookupUserName(name);
                                     if (msg.length > cmd.length + 2) {
                                         if (typeof user !== 'undefined') {
-                                            if(esBot.room.roomevent){
-                                                esBot.room.eventArtists.push(user.id);
+                                            if(superBot.room.roomevent){
+                                                superBot.room.eventArtists.push(user.id);
                                             }
-                                            esBot.userUtilities.moveUser(user.id, 0, false);
+                                            superBot.userUtilities.moveUser(user.id, 0, false);
                                         } else API.sendChat('/me [@' + chat.from + '] Usuario Invalido');
                                       }
                                 };                              
@@ -1120,14 +1120,14 @@ var superBot = {
                         type: 'startsWith',
                         functionality: function(chat, cmd){
                                 if(this.type === 'exact' && chat.message.length !== cmd.length) return void (0);
-                                if( !esBot.commands.executable(this.rank, chat) ) return void (0);
+                                if( !superBot.commands.executable(this.rank, chat) ) return void (0);
                                 else{
                                     var msg = chat.message;
                                     if(msg.length === cmd.length) return API.sendChat('/me [@' + chat.from + '] Limite não especificado');
                                     var limit = msg.substring(cmd.length + 1);
                                     if(!isNaN(limit)){
-                                        esBot.roomSettings.maximumAfk = parseInt(limit, 10);
-                                        API.sendChat('/me [@' + chat.from + '] Maximo Tempo AFK definido para ' + esBot.roomSettings.maximumAfk + ' minutos.');
+                                        superBot.roomSettings.maximumAfk = parseInt(limit, 10);
+                                        API.sendChat('/me [@' + chat.from + '] Maximo Tempo AFK definido para ' + superBot.roomSettings.maximumAfk + ' minutos.');
                                     }
                                     else API.sendChat('/me [@' + chat.from + '] Limite Invalido.');
                                 };                              
@@ -1139,16 +1139,16 @@ var superBot = {
                         type: 'exact',
                         functionality: function(chat, cmd){
                                 if(this.type === 'exact' && chat.message.length !== cmd.length) return void (0);
-                                if( !esBot.commands.executable(this.rank, chat) ) return void (0);
+                                if( !superBot.commands.executable(this.rank, chat) ) return void (0);
                                 else{
-                                    if(esBot.roomSettings.afkRemoval){
-                                        esBot.roomSettings.afkRemoval = !esBot.roomSettings.afkRemoval;
-                                        clearInterval(esBot.room.afkInterval);
+                                    if(superBot.roomSettings.afkRemoval){
+                                        superBot.roomSettings.afkRemoval = !superBot.roomSettings.afkRemoval;
+                                        clearInterval(superBot.room.afkInterval);
                                         API.sendChat('/me [@' + chat.from + '] AFK Remove está desativado.');
                                       }
                                     else {
-                                        esBot.roomSettings.afkRemoval = !esBot.roomSettings.afkRemoval;
-                                        esBot.room.afkInterval = setInterval(function(){esBot.roomUtilities.afkCheck()}, 2 * 1000);
+                                        superBot.roomSettings.afkRemoval = !superBot.roomSettings.afkRemoval;
+                                        superBot.room.afkInterval = setInterval(function(){superBot.roomUtilities.afkCheck()}, 2 * 1000);
                                         API.sendChat('/me [@' + chat.from + '] AFK Remove está ativado.');
                                       }
                                 };                              
@@ -1160,14 +1160,14 @@ var superBot = {
                         type: 'startsWith',
                         functionality: function(chat, cmd){
                                 if(this.type === 'exact' && chat.message.length !== cmd.length) return void (0);
-                                if( !esBot.commands.executable(this.rank, chat) ) return void (0);
+                                if( !superBot.commands.executable(this.rank, chat) ) return void (0);
                                 else{
                                     var msg = chat.message;
                                     if(msg.length === cmd.length) return API.sendChat('/me [@' + chat.from + '] No user specified.')
                                     var name = msg.substring(cmd.length + 2);
-                                    var user = esBot.userUtilities.lookupUserName(name);
+                                    var user = superBot.userUtilities.lookupUserName(name);
                                     if(typeof user === 'boolean') return API.sendChat('/me [@' + chat.from + '] Invalid user specified.');
-                                    esBot.userUtilities.setLastActivity(user);
+                                    superBot.userUtilities.setLastActivity(user);
                                     API.sendChat('/me [@' + chat.from + '] Reset the afk status of @' + name + '.');
                                 };                              
                         },
@@ -1178,16 +1178,16 @@ var superBot = {
                         type: 'startsWith',
                         functionality: function(chat, cmd){
                                 if(this.type === 'exact' && chat.message.length !== cmd.length) return void (0);
-                                if( !esBot.commands.executable(this.rank, chat) ) return void (0);
+                                if( !superBot.commands.executable(this.rank, chat) ) return void (0);
                                 else{                                    
                                     var msg = chat.message;
                                     if(msg.length === cmd.length) return API.sendChat('/me [@' + chat.from + '] No user specified.');
                                     var name = msg.substring(cmd.length + 2);
-                                    var user = esBot.userUtilities.lookupUserName(name);
+                                    var user = superBot.userUtilities.lookupUserName(name);
                                     if(typeof user === 'boolean') return API.sendChat('/me [@' + chat.from + '] Invalid user specified.');
-                                    var lastActive = esBot.userUtilities.getLastActivity(user);
+                                    var lastActive = superBot.userUtilities.getLastActivity(user);
                                     var inactivity = Date.now() - lastActive;
-                                    var time = esBot.roomUtilities.msToStr(inactivity);
+                                    var time = superBot.roomUtilities.msToStr(inactivity);
                                     API.sendChat('/me [@' + chat.from + '] @' + name + ' esteve inativo durante ' + time + '.');
                                 };                              
                         },
@@ -1198,15 +1198,15 @@ var superBot = {
                         type: 'exact',
                         functionality: function(chat, cmd){
                                 if(this.type === 'exact' && chat.message.length !== cmd.length) return void (0);
-                                if( !esBot.commands.executable(this.rank, chat) ) return void (0);
+                                if( !superBot.commands.executable(this.rank, chat) ) return void (0);
                                 else{
-                                    if(esBot.roomSettings.autoskip){
-                                        esBot.roomSettings.autoskip = !esBot.roomSettings.autoskip;
-                                        clearTimeout(esBot.room.autoskipTimer);
+                                    if(superBot.roomSettings.autoskip){
+                                        superBot.roomSettings.autoskip = !superBot.roomSettings.autoskip;
+                                        clearTimeout(superBot.room.autoskipTimer);
                                         return API.sendChat('/me [@' + chat.from + '] Autoskip desativado.');
                                     }
                                     else{
-                                        esBot.roomSettings.autoskip = !esBot.roomSettings.autoskip;
+                                        superBot.roomSettings.autoskip = !superBot.roomSettings.autoskip;
                                         return API.sendChat('/me [@' + chat.from + '] Autoskip ativado.');
                                     }
                                 };                              
@@ -1218,7 +1218,7 @@ var superBot = {
                         type: 'exact',
                         functionality: function(chat, cmd){
                                 if(this.type === 'exact' && chat.message.length !== cmd.length) return void (0);
-                                if( !esBot.commands.executable(this.rank, chat) ) return void (0);
+                                if( !superBot.commands.executable(this.rank, chat) ) return void (0);
                                 else{
                                     API.sendChat("/me Nos Recomendamos TastyPlug para AutoWoot : http://fungustime.pw/tastyplug/ ")
                                 };                              
@@ -1230,7 +1230,7 @@ var superBot = {
                         type: 'exact',
                         functionality: function(chat, cmd){
                                 if(this.type === 'exact' && chat.message.length !== cmd.length) return void (0);
-                                if( !esBot.commands.executable(this.rank, chat) ) return void (0);
+                                if( !superBot.commands.executable(this.rank, chat) ) return void (0);
                                 else{
                                     API.sendChat("/me A Brand Ambassador is the voice of the plug.dj users. They promote events, engage the community and share the plug.dj message around the world. For more info: http://blog.plug.dj/brand-ambassadors/");
                                 };                              
@@ -1242,12 +1242,12 @@ var superBot = {
                         type: 'startsWith',
                         functionality: function(chat, cmd){
                                 if(this.type === 'exact' && chat.message.length !== cmd.length) return void (0);
-                                if( !esBot.commands.executable(this.rank, chat) ) return void (0);
+                                if( !superBot.commands.executable(this.rank, chat) ) return void (0);
                                 else{
                                     var msg = chat.message;
                                     if(msg.length === cmd.length) return API.sendChat('/me [@' + chat.from + '] No valid user specified.');
                                     var name = msg.substr(cmd.length + 2);
-                                    var user = esBot.userUtilities.lookupUserName(name);
+                                    var user = superBot.userUtilities.lookupUserName(name);
                                     if(typeof user === 'boolean') return API.sendChat('/me [@' + chat.from + '] Invalid user specified.');
                                     API.sendChat('/me [' + chat.from + ' whips out the banhammer :hammer:]');
                                     API.moderateBanUser(user.id, 1, API.BAN.DAY);
@@ -1260,19 +1260,19 @@ var superBot = {
                         type: 'exact',
                         functionality: function(chat, cmd){
                                 if(this.type === 'exact' && chat.message.length !== cmd.length) return void (0);
-                                if( !esBot.commands.executable(this.rank, chat) ) return void (0);
+                                if( !superBot.commands.executable(this.rank, chat) ) return void (0);
                                 else{
                                     var msg = chat.message;
-                                    if(esBot.roomSettings.bouncerPlus){
-                                        esBot.roomSettings.bouncerPlus = false;
+                                    if(superBot.roomSettings.bouncerPlus){
+                                        superBot.roomSettings.bouncerPlus = false;
                                         return API.sendChat('/me [@' + chat.from + '] Bouncer+ está agora desativado.');
                                         }
                                     else{ 
-                                        if(!esBot.roomSettings.bouncerPlus){
+                                        if(!superBot.roomSettings.bouncerPlus){
                                             var id = chat.fromID;
-                                            var perm = esBot.userUtilities.getPermission(id);
+                                            var perm = superBot.userUtilities.getPermission(id);
                                             if(perm > 2){
-                                                esBot.roomSettings.bouncerPlus = true;
+                                                superBot.roomSettings.bouncerPlus = true;
                                                 return API.sendChat('/me [@' + chat.from + '] Bouncer+ está agora ativado.');
                                             }
                                         }
@@ -1287,7 +1287,7 @@ var superBot = {
                         type: 'exact',
                         functionality: function(chat, cmd){
                                 if(this.type === 'exact' && chat.message.length !== cmd.length) return void (0);
-                                if( !esBot.commands.executable(this.rank, chat) ) return void (0);
+                                if( !superBot.commands.executable(this.rank, chat) ) return void (0);
                                 else{
                                     var currentchat = $('#chat-messages').children();       
                                     for (var i = 0; i < currentchat.length; i++) {
@@ -1307,9 +1307,9 @@ var superBot = {
                         type: 'exact',
                         functionality: function(chat, cmd){
                                 if(this.type === 'exact' && chat.message.length !== cmd.length) return void (0);
-                                if( !esBot.commands.executable(this.rank, chat) ) return void (0);
+                                if( !superBot.commands.executable(this.rank, chat) ) return void (0);
                                 else{
-                                    API.sendChat("/me "+ esBot.name + " Comandos: " + esBot.cmdLink);
+                                    API.sendChat("/me "+ superBot.name + " Comandos: " + superBot.cmdLink);
                                 };                              
                         },
                 },
@@ -1347,7 +1347,7 @@ var superBot = {
 
                         functionality: function(chat, cmd){
                                 if(this.type === 'exact' && chat.message.length !== cmd.length) return void (0);
-                                if( !esBot.commands.executable(this.rank, chat) ) return void (0);
+                                if( !superBot.commands.executable(this.rank, chat) ) return void (0);
                                 else{
                                     var msg = chat.message;
       
@@ -1358,7 +1358,7 @@ var superBot = {
                                     }
                                     else{
                                         var name = msg.substring(space + 2);
-                                        var user = esBot.userUtilities.lookupUserName(name);
+                                        var user = superBot.userUtilities.lookupUserName(name);
                                         if (user === false || !user.inRoom) {
                                           return API.sendChat("/em não vê '" + name + "' na sala e come o seu cookie.");
                                         } 
@@ -1379,9 +1379,9 @@ var superBot = {
                         type: 'exact',
                         functionality: function(chat, cmd){
                                 if(this.type === 'exact' && chat.message.length !== cmd.length) return void (0);
-                                if( !esBot.commands.executable(this.rank, chat) ) return void (0);
+                                if( !superBot.commands.executable(this.rank, chat) ) return void (0);
                                 else{
-                                    esBot.roomUtilities.changeDJCycle();
+                                    superBot.roomUtilities.changeDJCycle();
                                 };                              
                         },
                 },
@@ -1391,14 +1391,14 @@ var superBot = {
                         type: 'exact',
                         functionality: function(chat, cmd){
                                 if(this.type === 'exact' && chat.message.length !== cmd.length) return void (0);
-                                if( !esBot.commands.executable(this.rank, chat) ) return void (0);
+                                if( !superBot.commands.executable(this.rank, chat) ) return void (0);
                                 else{
-                                    if(esBot.roomSettings.cycleGuard){
-                                        esBot.roomSettings.cycleGuard = !esBot.roomSettings.cycleGuard;
+                                    if(superBot.roomSettings.cycleGuard){
+                                        superBot.roomSettings.cycleGuard = !superBot.roomSettings.cycleGuard;
                                         return API.sendChat('/me [@' + chat.from + '] CycleGuard desativado.');
                                     }
                                     else{
-                                        esBot.roomSettings.cycleGuard = !esBot.roomSettings.cycleGuard;
+                                        superBot.roomSettings.cycleGuard = !superBot.roomSettings.cycleGuard;
                                         return API.sendChat('/me [@' + chat.from + '] CycleGuard ativado.');
                                     }
                                 
@@ -1411,13 +1411,13 @@ var superBot = {
                         type: 'startsWith',
                         functionality: function(chat, cmd){
                                 if(this.type === 'exact' && chat.message.length !== cmd.length) return void (0);
-                                if( !esBot.commands.executable(this.rank, chat) ) return void (0);
+                                if( !superBot.commands.executable(this.rank, chat) ) return void (0);
                                 else{
                                     var msg = chat.message;
                                     var cycleTime = msg.substring(cmd.length + 1);
                                     if(!isNaN(cycleTime)){
-                                        esBot.roomSettings.maximumCycletime = cycleTime;
-                                        return API.sendChat('/me [@' + chat.from + '] O CycleGuard está definido para ' + esBot.roomSettings.maximumCycletime + ' minuto(s).');
+                                        superBot.roomSettings.maximumCycletime = cycleTime;
+                                        return API.sendChat('/me [@' + chat.from + '] O CycleGuard está definido para ' + superBot.roomSettings.maximumCycletime + ' minuto(s).');
                                     }
                                     else return API.sendChat('/me [@' + chat.from + '] Nenhum tempo correto definido para o CycleGuard.');
                                 
@@ -1430,20 +1430,20 @@ var superBot = {
                         type: 'startsWith',
                         functionality: function(chat, cmd){
                                 if(this.type === 'exact' && chat.message.length !== cmd.length) return void (0);
-                                if( !esBot.commands.executable(this.rank, chat) ) return void (0);
+                                if( !superBot.commands.executable(this.rank, chat) ) return void (0);
                                 else{
                                     var msg = chat.message;
                                     var name;
                                     if(msg.length === cmd.length) name = chat.from;
                                     else{ 
                                         name = msg.substring(cmd.length + 2);
-                                        var perm = esBot.userUtilities.getPermission(chat.fromID);
+                                        var perm = superBot.userUtilities.getPermission(chat.fromID);
                                         if(perm < 2) return API.sendChat('/me [@' + chat.from + '] Only bouncers and above can do !dclookup for others.');
                                     }    
-                                    var user = esBot.userUtilities.lookupUserName(name);
+                                    var user = superBot.userUtilities.lookupUserName(name);
                                     if(typeof user === 'boolean') return API.sendChat('/me [@' + chat.from + '] Invalid user specified.');
                                     var id = user.id;
-                                    var toChat = esBot.userUtilities.dclookup(id);
+                                    var toChat = superBot.userUtilities.dclookup(id);
                                     API.sendChat(toChat);
                                 };                              
                         },
@@ -1454,7 +1454,7 @@ var superBot = {
                         type: 'exact',
                         functionality: function(chat, cmd){
                                 if(this.type === 'exact' && chat.message.length !== cmd.length) return void (0);
-                                if( !esBot.commands.executable(this.rank, chat) ) return void (0);
+                                if( !superBot.commands.executable(this.rank, chat) ) return void (0);
                                 else{
                                     API.sendChat('/me Lista De Emoji: http://www.emoji-cheat-sheet.com/');
                                 };                              
@@ -1466,13 +1466,13 @@ var superBot = {
                         type: 'startsWith',
                         functionality: function(chat, cmd){
                                 if(this.type === 'exact' && chat.message.length !== cmd.length) return void (0);
-                                if( !esBot.commands.executable(this.rank, chat) ) return void (0);
+                                if( !superBot.commands.executable(this.rank, chat) ) return void (0);
                                 else{
                                     if(chat.message.length === cmd.length) return API.sendChat('/me No user specified.');
                                     var name = chat.message.substring(cmd.length + 2);
-                                    var user = esBot.userUtilities.lookupUserName(name);
+                                    var user = superBot.userUtilities.lookupUserName(name);
                                     if(typeof user === 'boolean') return API.sendChat('/me Invalid user specified.');
-                                    var lang = esBot.userUtilities.getUser(user).language;
+                                    var lang = superBot.userUtilities.getUser(user).language;
                                     var ch = '/me @' + name + ' ';
                                     switch(lang){
                                         case 'en': break;
@@ -1498,22 +1498,22 @@ var superBot = {
                         type: 'startsWith',
                         functionality: function(chat, cmd){
                                 if(this.type === 'exact' && chat.message.length !== cmd.length) return void (0);
-                                if( !esBot.commands.executable(this.rank, chat) ) return void (0);
+                                if( !superBot.commands.executable(this.rank, chat) ) return void (0);
                                 else{
-                                    var perm = esBot.userUtilities.getPermission(chat.fromID);
+                                    var perm = superBot.userUtilities.getPermission(chat.fromID);
                                     var msg = chat.message;
                                     var name;
                                     if(msg.length > cmd.length){
                                         if(perm < 2) return void (0);
                                         name = msg.substring(cmd.length + 2);
                                       } else name = chat.from;
-                                    var user = esBot.userUtilities.lookupUserName(name);
+                                    var user = superBot.userUtilities.lookupUserName(name);
                                     if(typeof user === 'boolean') return API.sendChat('/me [@' + chat.from + '] Usuario Invalido.');
                                     var pos = API.getWaitListPosition(user.id);
                                     if(pos < 0) return API.sendChat('/me @' + name + ', você não está na lista de espera.');
                                     var timeRemaining = API.getTimeRemaining();
                                     var estimateMS = ((pos+1) * 4 * 60 + timeRemaining) * 1000;
-                                    var estimateString = esBot.roomUtilities.msToStr(estimateMS);
+                                    var estimateString = superBot.roomUtilities.msToStr(estimateMS);
                                     API.sendChat('/me @' + name + ' Você vai chegar a Cabine De Dj em, aproximadamente ' + estimateString + '.');                       
                                 };                              
                         },
@@ -1524,10 +1524,10 @@ var superBot = {
                         type: 'exact',
                         functionality: function(chat, cmd){
                                 if(this.type === 'exact' && chat.message.length !== cmd.length) return void (0);
-                                if( !esBot.commands.executable(this.rank, chat) ) return void (0);
+                                if( !superBot.commands.executable(this.rank, chat) ) return void (0);
                                 else{
-                                    if(typeof esBot.roomSettings.fbLink === "string")
-                                        API.sendChat('/me [' + chat.from + '] Entre no nosso grupo : ' + esBot.roomSettings.fbLink);
+                                    if(typeof superBot.roomSettings.fbLink === "string")
+                                        API.sendChat('/me [' + chat.from + '] Entre no nosso grupo : ' + superBot.roomSettings.fbLink);
                                 };                              
                         },
                 },
@@ -1537,14 +1537,14 @@ var superBot = {
                         type: 'exact',
                         functionality: function(chat, cmd){
                                 if(this.type === 'exact' && chat.message.length !== cmd.length) return void (0);
-                                if( !esBot.commands.executable(this.rank, chat) ) return void (0);
+                                if( !superBot.commands.executable(this.rank, chat) ) return void (0);
                                 else{
-                                    if(esBot.roomSettings.filterChat){
-                                        esBot.roomSettings.filterChat = !esBot.roomSettings.filterChat;
+                                    if(superBot.roomSettings.filterChat){
+                                        superBot.roomSettings.filterChat = !superBot.roomSettings.filterChat;
                                         return API.sendChat('/me [@' + chat.from + '] Filtro de Chat desativado.');
                                     }
                                     else{
-                                        esBot.roomSettings.filterChat = !esBot.roomSettings.filterChat;
+                                        superBot.roomSettings.filterChat = !superBot.roomSettings.filterChat;
                                         return API.sendChat('/me [@' + chat.from + '] Filtro de Chat ativado.');
                                     } 
                                 
@@ -1557,10 +1557,10 @@ var superBot = {
                         type: 'exact',
                         functionality: function(chat, cmd){
                                 if(this.type === 'exact' && chat.message.length !== cmd.length) return void (0);
-                                if( !esBot.commands.executable(this.rank, chat) ) return void (0);
+                                if( !superBot.commands.executable(this.rank, chat) ) return void (0);
                                 else{
-                                    if(esBot.room.roulette.rouletteStatus && esBot.room.roulette.participants.indexOf(chat.fromID) < 0){
-                                        esBot.room.roulette.participants.push(chat.fromID);
+                                    if(superBot.room.roulette.rouletteStatus && superBot.room.roulette.participants.indexOf(chat.fromID) < 0){
+                                        superBot.room.roulette.participants.push(chat.fromID);
                                         API.sendChat("/me @" + chat.from + " entrou na loteria! (!leave se quiser desistir.)");
                                     }
                                 };                              
