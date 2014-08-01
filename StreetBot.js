@@ -1102,7 +1102,7 @@ var superBot = {
                                     var msg = chat.message;
                                     if(msg.length === cmd.length) return API.sendChat('/me [@' + chat.from + '] Nenhum Usuario Especificado.');
                                     var name = msg.substr(cmd.length + 2);   
-                                    var user = esBot.userUtilities.lookupUserName(name);
+                                    var user = superBot.userUtilities.lookupUserName(name);
                                     if (msg.length > cmd.length + 2) {
                                         if (typeof user !== 'undefined') {
                                             if(superBot.room.roomevent){
@@ -1572,7 +1572,7 @@ var superBot = {
                         type: 'startsWith',
                         functionality: function(chat, cmd){
                                 if(this.type === 'exact' && chat.message.length !== cmd.length) return void (0);
-                                if( !esBot.commands.executable(this.rank, chat) ) return void (0);
+                                if( !superBot.commands.executable(this.rank, chat) ) return void (0);
                                 else{
                                     var msg = chat.message;
                                     if(msg.length === cmd.length) return API.sendChat('/me [@' + chat.from + '] No user specified.');
