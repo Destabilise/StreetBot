@@ -18,7 +18,7 @@
 
 (function(){
 
-var kill = function(){
+var diebot = function(){
     clearInterval(superBot.room.autodisableInterval);
     clearInterval(superBot.room.afkInterval);
     superBot.status = false;
@@ -41,13 +41,13 @@ var storeToStorage = function(){
 var retrieveFromStorage = function(){
     if(navigator.userAgent.toLowerCase().indexOf("chrome")<0) return;
     var info = localStorage.getItem("superBotStorageInfo");
-    if(info === null) API.chatLog("No previous data found.");
+    if(info === null) API.chatLog("Dados Antigos não encontrados.");
     else{
         var settings = JSON.parse(localStorage.getItem("superBotRoomSettings"));
         var room = JSON.parse(localStorage.getItem("superBotRoom"));
         var elapsed = Date.now() - JSON.parse(info).time;
         if((elapsed < 1*60*60*1000)){
-            API.chatLog('Retrieving previously stored data.');
+            API.chatLog('Carregando Dados Antigos...');
             for(var prop in settings){
                 superBot.roomSettings[prop] = settings[prop];
             }
@@ -60,7 +60,7 @@ var retrieveFromStorage = function(){
             superBot.room.roomstats = room.roomstats;
             superBot.room.messages = room.messages;
             superBot.room.queue = room.queue;
-            API.chatLog('Previously stored data succesfully retrieved.');
+            API.chatLog('Dados Antigos Carregados.');
         }
     }
     var json_sett = null;
@@ -86,10 +86,10 @@ var retrieveFromStorage = function(){
 };
 
 var superBot = {
-        version: "1.1.5",        
+        version: "2.0.0",        
         status: false,
         name: "SuperBot",
-        creator: "TioFrosty",
+        creator: "TioFrosty , DropTheBass",
         loggedInID: null,
         scriptLink: "https://raw.githubusercontent.com/iFrooosty/StreetBot/master/StreetBot.js",
         cmdLink: "http://git.io/245Ppg",
@@ -608,7 +608,7 @@ var superBot = {
                     var now = +new Date();
                     var interfix = '';
                     if(plays > 1) interfix = 's'
-                    API.sendChat('/me :repeat: Esta música foi tocada ' + plays + ' time' + interfix + ' na última ' + superBot.roomUtilities.msToStr(Date.now() - firstPlayed) + ', Foi tocada pela última vez á ' + superBot.roomUtilities.msToStr(Date.now() - lastPlayed) + ' atrás. :repeat: ');
+                    API.sendChat('/me :repeat: Esta música foi tocada ' + plays + ' vez(es) ' + interfix + ' na última ' + superBot.roomUtilities.msToStr(Date.now() - firstPlayed) + ', Foi tocada pela última vez á ' + superBot.roomUtilities.msToStr(Date.now() - lastPlayed) + ' atrás. :repeat: ');
 
                     superBot.room.historyList[i].push(+new Date());
                     alreadyPlayed = true;
@@ -807,7 +807,7 @@ var superBot = {
                     case '!join':               superBot.commands.joinCommand.functionality(chat, '!join');                            executed = true; break;
                     case '!jointime':           superBot.commands.jointimeCommand.functionality(chat, '!jointime');                    executed = true; break;
                     case '!kick':               superBot.commands.kickCommand.functionality(chat, '!kick');                            executed = true; break;
-                    case '!kill':               superBot.commands.killCommand.functionality(chat, '!kill');                            executed = true; break;
+                    case '!diebot':             superBot.commands.diebotCommand.functionality(chat, '!diebot');                            executed = true; break;
                     case '!leave':              superBot.commands.leaveCommand.functionality(chat, '!leave');                          executed = true; break;
                     case '!link':               superBot.commands.linkCommand.functionality(chat, '!link');                            executed = true; break;
                     case '!lock':               superBot.commands.lockCommand.functionality(chat, '!lock');                            executed = true; break;
@@ -1577,11 +1577,11 @@ var superBot = {
                                     var msg = chat.message;
                                     if(msg.length === cmd.length) return API.sendChat('/me [@' + chat.from + '] No user specified.');
                                     var name = msg.substring(cmd.length + 2);
-                                    var user = esBot.userUtilities.lookupUserName(name);
+                                    var user = superBot.userUtilities.lookupUserName(name);
                                     if(typeof user === 'boolean') return API.sendChat('/me [@' + chat.from + '] Invalid user specified.');
-                                    var join = esBot.userUtilities.getJointime(user);
+                                    var join = superBot.userUtilities.getJointime(user);
                                     var time = Date.now() - join;
-                                    var timeString = esBot.roomUtilities.msToStr(time);
+                                    var timeString = superBot.roomUtilities.msToStr(time);
                                     API.sendChat('/me [@' + chat.from + '] @' + name + ' Esteve na sala durante ' + timeString + '.');
                                 };                              
                         },
@@ -1592,7 +1592,7 @@ var superBot = {
                         type: 'startsWith',
                         functionality: function(chat, cmd){
                                 if(this.type === 'exact' && chat.message.length !== cmd.length) return void (0);
-                                if( !esBot.commands.executable(this.rank, chat) ) return void (0);
+                                if( !superBot.commands.executable(this.rank, chat) ) return void (0);
                                 else{
                                     var msg = chat.message;
                                     var lastSpace = msg.lastIndexOf(' ');
@@ -1607,12 +1607,12 @@ var superBot = {
                                         name = msg.substring(cmd.length + 2, lastSpace);
                                     }
                                     
-                                    var user = esBot.userUtilities.lookupUserName(name);
+                                    var user = superBot.userUtilities.lookupUserName(name);
                                     var from = chat.from;
                                     if(typeof user === 'boolean') return API.sendChat('/me [@' + chat.from + '] Usuario invalido.');
 
-                                    var permFrom = esBot.userUtilities.getPermission(chat.fromID);
-                                    var permTokick = esBot.userUtilities.getPermission(user.id);
+                                    var permFrom = superBot.userUtilities.getPermission(chat.fromID);
+                                    var permTokick = superBot.userUtilities.getPermission(user.id);
 
                                     if(permFrom <= permTokick)
                                         return API.sendChat("/me [@" + chat.from + "] Voce não pode expulsar usuarios com cargo igual ou maior que você!")
@@ -1635,17 +1635,17 @@ var superBot = {
                         },
                 },
 
-                killCommand: {
+                diebotCommand: {
                         rank: 'bouncer',
                         type: 'exact',
                         functionality: function(chat, cmd){
                                 if(this.type === 'exact' && chat.message.length !== cmd.length) return void (0);
-                                if( !esBot.commands.executable(this.rank, chat) ) return void (0);
+                                if( !superBot.commands.executable(this.rank, chat) ) return void (0);
                                 else{
                                     storeToStorage();
-                                    API.sendChat('/me StreetBot is dead :joy: .');
-                                    esBot.disconnectAPI();
-                                    setTimeout(function(){kill();},1000);
+                                    API.sendChat('/me SuperBot is dead :joy: .');
+                                    superBot.disconnectAPI();
+                                    setTimeout(function(){diebot();},1000);
                                 };                              
                         },
                 },
@@ -1655,11 +1655,11 @@ var superBot = {
                         type: 'exact',
                         functionality: function(chat, cmd){
                                 if(this.type === 'exact' && chat.message.length !== cmd.length) return void (0);
-                                if( !esBot.commands.executable(this.rank, chat) ) return void (0);
+                                if( !superBot.commands.executable(this.rank, chat) ) return void (0);
                                 else{
-                                    var ind = esBot.room.roulette.participants.indexOf(chat.fromID);
+                                    var ind = superBot.room.roulette.participants.indexOf(chat.fromID);
                                     if(ind > -1){
-                                        esBot.room.roulette.participants.splice(ind, 1);
+                                        superBot.room.roulette.participants.splice(ind, 1);
                                         API.sendChat("/me @" + chat.from + " saiu da loteria!");
                                     }
                                 };                              
@@ -1671,12 +1671,12 @@ var superBot = {
                         type: 'exact',
                         functionality: function(chat, cmd){
                                 if(this.type === 'exact' && chat.message.length !== cmd.length) return void (0);
-                                if( !esBot.commands.executable(this.rank, chat) ) return void (0);
+                                if( !superBot.commands.executable(this.rank, chat) ) return void (0);
                                 else{
                                     var media = API.getMedia();
                                     var from = chat.from;
-                                    var user = esBot.userUtilities.lookupUser(chat.fromID);
-                                    var perm = esBot.userUtilities.getPermission(chat.fromID);
+                                    var user = superBot.userUtilities.lookupUser(chat.fromID);
+                                    var perm = superBot.userUtilities.getPermission(chat.fromID);
                                     var dj = API.getDJ().id;
                                     var isDj = false;
                                     if (dj === chat.fromID) isDj = true;
@@ -1701,9 +1701,9 @@ var superBot = {
                         type: 'exact',
                         functionality: function(chat, cmd){
                                 if(this.type === 'exact' && chat.message.length !== cmd.length) return void (0);
-                                if( !esBot.commands.executable(this.rank, chat) ) return void (0);
+                                if( !superBot.commands.executable(this.rank, chat) ) return void (0);
                                 else{
-                                    esBot.roomUtilities.booth.lockBooth();
+                                    superBot.roomUtilities.booth.lockBooth();
                                 };                              
                         },
                 },
@@ -1713,11 +1713,11 @@ var superBot = {
                         type: 'exact',
                         functionality: function(chat, cmd){
                                 if(this.type === 'exact' && chat.message.length !== cmd.length) return void (0);
-                                if( !esBot.commands.executable(this.rank, chat) ) return void (0);
+                                if( !superBot.commands.executable(this.rank, chat) ) return void (0);
                                 else{
-                                    var temp = esBot.roomSettings.lockdownEnabled;
-                                    esBot.roomSettings.lockdownEnabled = !temp;
-                                    if(esBot.roomSettings.lockdownEnabled){
+                                    var temp = superBot.roomSettings.lockdownEnabled;
+                                    superBot.roomSettings.lockdownEnabled = !temp;
+                                    if(superBot.roomSettings.lockdownEnabled){
                                         return API.sendChat("/me [@" + chat.from + "] Lockdown ativado. Agora apenas staff pode conversar.");
                                     }
                                     else return API.sendChat('/me [@' + chat.from + '] Lockdown desativado.');
@@ -1731,14 +1731,14 @@ var superBot = {
                         type: 'exact',
                         functionality: function(chat, cmd){
                                 if(this.type === 'exact' && chat.message.length !== cmd.length) return void (0);
-                                if( !esBot.commands.executable(this.rank, chat) ) return void (0);
+                                if( !superBot.commands.executable(this.rank, chat) ) return void (0);
                                 else{
-                                    if(esBot.roomSettings.lockGuard){
-                                        esBot.roomSettings.lockGuard = !esBot.roomSettings.lockGuard;
+                                    if(superBot.roomSettings.lockGuard){
+                                        superBot.roomSettings.lockGuard = !superBot.roomSettings.lockGuard;
                                         return API.sendChat('/me [@' + chat.from + '] Lockguard desativado.');
                                     }
                                     else{
-                                        esBot.roomSettings.lockGuard = !esBot.roomSettings.lockGuard;
+                                        superBot.roomSettings.lockGuard = !superBot.roomSettings.lockGuard;
                                         return API.sendChat('/me [@' + chat.from + '] Lockguard ativado.');
                                     } 
                                 
@@ -1751,30 +1751,30 @@ var superBot = {
                         type: 'startsWith',
                         functionality: function(chat, cmd){
                                 if(this.type === 'exact' && chat.message.length !== cmd.length) return void (0);
-                                if( !esBot.commands.executable(this.rank, chat) ) return void (0);
+                                if( !superBot.commands.executable(this.rank, chat) ) return void (0);
                                 else{
-                                    if(esBot.room.skippable){
+                                    if(superBot.room.skippable){
 
                                         var dj = API.getDJ();
                                         var id = dj.id;
                                         var name = dj.username;
                                         var msgSend = '@' + name + ': ';
 
-                                        esBot.room.queueable = false;
+                                        superBot.room.queueable = false;
 
                                         if(chat.message.length === cmd.length){
                                             API.sendChat('/me [' + chat.from + ' usou LockSkip.]');
-                                            esBot.roomUtilities.booth.lockBooth();
-                                            //esBot.roomUtilities.changeDJCycle();
+                                            superBot.roomUtilities.booth.lockBooth();
+                                            //superBot.roomUtilities.changeDJCycle();
                                             setTimeout(function(id){
                                                 API.moderateForceSkip();
-                                                esBot.room.skippable = false;
-                                                setTimeout(function(){ esBot.room.skippable = true}, 5*1000);
+                                                superBot.room.skippable = false;
+                                                setTimeout(function(){ superBot.room.skippable = true}, 5*1000);
                                                 setTimeout(function(id){
-                                                    esBot.userUtilities.moveUser(id, esBot.roomSettings.lockskipPosition, false);
-                                                    esBot.room.queueable = true;
-                                                    setTimeout(function(){esBot.roomUtilities.booth.unlockBooth();}, 1000);
-                                                    //esBot.roomUtilities.changeDJCycle();
+                                                    superBot.userUtilities.moveUser(id, superBot.roomSettings.lockskipPosition, false);
+                                                    superBot.room.queueable = true;
+                                                    setTimeout(function(){superBot.roomUtilities.booth.unlockBooth();}, 1000);
+                                                    //superBot.roomUtilities.changeDJCycle();
                                                     
                                                 },1500, id);
                                             }, 1000, id);
@@ -1785,27 +1785,27 @@ var superBot = {
                                         var validReason = false;
                                         var msg = chat.message;
                                         var reason = msg.substring(cmd.length + 1);       
-                                        for(var i = 0; i < esBot.roomSettings.lockskipReasons.length; i++){
-                                            var r = esBot.roomSettings.lockskipReasons[i][0];
+                                        for(var i = 0; i < superBot.roomSettings.lockskipReasons.length; i++){
+                                            var r = superBot.roomSettings.lockskipReasons[i][0];
                                             if(reason.indexOf(r) !== -1){
                                                 validReason = true;
-                                                msgSend += esBot.roomSettings.lockskipReasons[i][1];
+                                                msgSend += superBot.roomSettings.lockskipReasons[i][1];
                                             }
                                         }
                                         if(validReason){
                                             API.sendChat('/me [' + chat.from + ' usou LockSkip.]');
-                                            esBot.roomUtilities.booth.lockBooth();
-                                            //esBot.roomUtilities.changeDJCycle();
+                                            superBot.roomUtilities.booth.lockBooth();
+                                            //superBot.roomUtilities.changeDJCycle();
                                             setTimeout(function(id){
                                                 API.moderateForceSkip();
-                                                esBot.room.skippable = false;
+                                                superBot.room.skippable = false;
                                                 API.sendChat(msgSend);
-                                                setTimeout(function(){ esBot.room.skippable = true}, 5*1000);
+                                                setTimeout(function(){ superBot.room.skippable = true}, 5*1000);
                                                 setTimeout(function(id){
-                                                    esBot.userUtilities.moveUser(id, esBot.roomSettings.lockskipPosition, false);
-                                                    esBot.room.queueable = true;
-                                                    setTimeout(function(){esBot.roomUtilities.booth.unlockBooth();}, 1000);
-                                                    //esBot.roomUtilities.changeDJCycle();
+                                                    superBot.userUtilities.moveUser(id, superBot.roomSettings.lockskipPosition, false);
+                                                    superBot.room.queueable = true;
+                                                    setTimeout(function(){superBot.roomUtilities.booth.unlockBooth();}, 1000);
+                                                    //superBot.roomUtilities.changeDJCycle();
                                                     
                                                 },1500, id);
                                             }, 1000, id);
@@ -1823,13 +1823,13 @@ var superBot = {
                         type: 'startsWith',
                         functionality: function(chat, cmd){
                                 if(this.type === 'exact' && chat.message.length !== cmd.length) return void (0);
-                                if( !esBot.commands.executable(this.rank, chat) ) return void (0);
+                                if( !superBot.commands.executable(this.rank, chat) ) return void (0);
                                 else{
                                     var msg = chat.message;
                                     var pos = msg.substring(cmd.length + 1);
                                     if(!isNaN(pos)){
-                                        esBot.roomSettings.lockskipPosition = pos;
-                                        return API.sendChat('/me [@' + chat.from + '] LockSkip irá mover o DJ para a posição ' + esBot.roomSettings.lockskipPosition + '.');
+                                        superBot.roomSettings.lockskipPosition = pos;
+                                        return API.sendChat('/me [@' + chat.from + '] LockSkip irá mover o DJ para a posição ' + superBot.roomSettings.lockskipPosition + '.');
                                     }
                                     else return API.sendChat('/me [@' + chat.from + '] Posição invalida.');
                                 };                              
@@ -1841,13 +1841,13 @@ var superBot = {
                         type: 'startsWith',
                         functionality: function(chat, cmd){
                                 if(this.type === 'exact' && chat.message.length !== cmd.length) return void (0);
-                                if( !esBot.commands.executable(this.rank, chat) ) return void (0);
+                                if( !superBot.commands.executable(this.rank, chat) ) return void (0);
                                 else{
                                     var msg = chat.message;
                                     var lockTime = msg.substring(cmd.length + 1);
                                     if(!isNaN(lockTime)){
-                                        esBot.roomSettings.maximumLocktime = lockTime;
-                                        return API.sendChat('/me [@' + chat.from + '] O LockGuard está definida para ' + esBot.roomSettings.maximumLocktime + ' minuto(s).');
+                                        superBot.roomSettings.maximumLocktime = lockTime;
+                                        return API.sendChat('/me [@' + chat.from + '] O LockGuard está definido para ' + superBot.roomSettings.maximumLocktime + ' minuto(s).');
                                     }
                                     else return API.sendChat('/me [@' + chat.from + '] Sem tempo correto definido para o LockGuard.');
                                 };                              
@@ -1859,13 +1859,13 @@ var superBot = {
                         type: 'startsWith',
                         functionality: function(chat, cmd){
                                 if(this.type === 'exact' && chat.message.length !== cmd.length) return void (0);
-                                if( !esBot.commands.executable(this.rank, chat) ) return void (0);
+                                if( !superBot.commands.executable(this.rank, chat) ) return void (0);
                                 else{
                                     var msg = chat.message;
                                     var maxTime = msg.substring(cmd.length + 1);
                                     if(!isNaN(maxTime)){
-                                        esBot.roomSettings.maximumSongLength = maxTime;
-                                        return API.sendChat('/me [@' + chat.from + '] O Maximo Tempo para Músicas foi definida para ' + esBot.roomSettings.maximumSongLength + ' minutos.');
+                                        superBot.roomSettings.maximumSongLength = maxTime;
+                                        return API.sendChat('/me [@' + chat.from + '] O Maximo Tempo para Músicas foi definida para ' +superBot superBot.roomSettings.maximumSongLength + ' minutos.');
                                     }
                                     else return API.sendChat('/me [@' + chat.from + '] Sem Tempo Correcto Definido.');
                                 };                              
@@ -1877,19 +1877,19 @@ var superBot = {
                         type: 'startsWith',
                         functionality: function(chat, cmd){
                                 if(this.type === 'exact' && chat.message.length !== cmd.length) return void (0);
-                                if( !esBot.commands.executable(this.rank, chat) ) return void (0);
+                                if( !superBot.commands.executable(this.rank, chat) ) return void (0);
                                 else{
                                     var msg = chat.message;
-                                    if(msg.length <= cmd.length + 1) return API.sendChat('/me MotD: ' + esBot.roomSettings.motd);
+                                    if(msg.length <= cmd.length + 1) return API.sendChat('/me MotD: ' + superBot.roomSettings.motd);
                                     var argument = msg.substring(cmd.length + 1);
-                                    if(!esBot.roomSettings.motdEnabled) esBot.roomSettings.motdEnabled = !esBot.roomSettings.motdEnabled;
+                                    if(!superBot.roomSettings.motdEnabled) superBot.roomSettings.motdEnabled = !superBot.roomSettings.motdEnabled;
                                     if(isNaN(argument)){
-                                        esBot.roomSettings.motd = argument;
-                                        API.sendChat("/me MotD set to: " + esBot.roomSettings.motd);
+                                        superBot.roomSettings.motd = argument;
+                                        API.sendChat("/me MotD definido para : " + superBot.roomSettings.motd);
                                     }
                                     else{
-                                        esBot.roomSettings.motdInterval = argument;
-                                        API.sendChat('/me MotD interval set to ' + esBot.roomSettings.motdInterval + '.');
+                                        superBot.roomSettings.motdInterval = argument;
+                                        API.sendChat('/me Intervalo de MotD definido para : ' + superBot.roomSettings.motdInterval + '.');
                                     }
                                 };                              
                         },
@@ -1900,7 +1900,7 @@ var superBot = {
                         type: 'startsWith',
                         functionality: function(chat, cmd){
                                 if(this.type === 'exact' && chat.message.length !== cmd.length) return void (0);
-                                if( !esBot.commands.executable(this.rank, chat) ) return void (0);
+                                if( !superBot.commands.executable(this.rank, chat) ) return void (0);
                                 else{
                                     var msg = chat.message;
                                     if(msg.length === cmd.length) return API.sendChat('/me [@' + chat.from + '] Nenhum usuario especificado.');
@@ -1917,12 +1917,12 @@ var superBot = {
                                         pos = parseInt(msg.substring(lastSpace + 1));
                                         name = msg.substring(cmd.length + 2,lastSpace);
                                     }
-                                    var user = esBot.userUtilities.lookupUserName(name);
+                                    var user = superBot.userUtilities.lookupUserName(name);
                                     if(typeof user === 'boolean') return API.sendChat('/me [@' + chat.from + '] Usuario Invalido.');
-                                    if(user.id === esBot.loggedInID) return API.sendChat('/me [@' + chat.from + '] Por favor, Nao tente me adicionar na lista de espera.');
+                                    if(user.id === superBot.loggedInID) return API.sendChat('/me [@' + chat.from + '] Por favor, Nao tente me adicionar na lista de espera.');
                                     if (!isNaN(pos)) {
                                         API.sendChat('/me [' + chat.from + ' usou move.]');
-                                        esBot.userUtilities.moveUser(user.id, pos, false); 
+                                        superBot.userUtilities.moveUser(user.id, pos, false); 
                                     } else return API.sendChat('/me [@' + chat.from + '] Posição Invalida.');
                                 };                           
                         },
@@ -1933,7 +1933,7 @@ var superBot = {
                         type: 'startsWith',
                         functionality: function(chat, cmd){
                                 if(this.type === 'exact' && chat.message.length !== cmd.length) return void (0);
-                                if( !esBot.commands.executable(this.rank, chat) ) return void (0);
+                                if( !superBot.commands.executable(this.rank, chat) ) return void (0);
                                 else{
                                     var msg = chat.message;
                                     if(msg.length === cmd.length) return API.sendChat('/me [@' + chat.from + '] Nenhum User Especificado :warning:.');
@@ -1951,17 +1951,17 @@ var superBot = {
                                         name = msg.substring(cmd.length + 2, lastSpace);
                                     }
                                     var from = chat.from;
-                                    var user = esBot.userUtilities.lookupUserName(name);
+                                    var user = superBot.userUtilities.lookupUserName(name);
                                     if(typeof user === 'boolean') return API.sendChat('/me [@' + chat.from + '] Usuario Invalido :warning: .');
-                                    var permFrom = esBot.userUtilities.getPermission(chat.fromID);
-                                    var permUser = esBot.userUtilities.getPermission(user.id);
+                                    var permFrom = superBot.userUtilities.getPermission(chat.fromID);
+                                    var permUser = superBot.userUtilities.getPermission(user.id);
                                     if(permFrom > permUser){
-                                        esBot.room.mutedUsers.push(user.id);
+                                        superBot.room.mutedUsers.push(user.id);
                                         if(time === null) API.sendChat('/me [@' + chat.from + '] Mutou @' + name + ' :no_mouth: .');
                                         else{
                                             API.sendChat('/me [@' + chat.from + '] Mutou @' + name + ' for ' + time + ' minutos :no_mouth:.');
                                             setTimeout(function(id){
-                                                var muted = esBot.room.mutedUsers;
+                                                var muted = superBot.room.mutedUsers;
                                                 var wasMuted = false;
                                                 var indexMuted = -1;
                                                 for(var i = 0; i < muted.length; i++){
@@ -1971,10 +1971,10 @@ var superBot = {
                                                     }
                                                 }
                                                 if(indexMuted > -1){
-                                                    esBot.room.mutedUsers.splice(indexMuted);
-                                                    var u = esBot.userUtilities.lookupUser(id);
+                                                    superBot.room.mutedUsers.splice(indexMuted);
+                                                    var u = superBot.userUtilities.lookupUser(id);
                                                     var name = u.username;
-                                                    API.sendChat('/me [@' + chat.from + '] Unmuted @' + name + '.');
+                                                    API.sendChat('/me [@' + chat.from + '] Desmutado @' + name + '.');
                                                 }
                                             }, time * 60 * 1000, user.id);
                                         } 
@@ -1989,10 +1989,10 @@ var superBot = {
                         type: 'exact',
                         functionality: function(chat, cmd){
                                 if(this.type === 'exact' && chat.message.length !== cmd.length) return void (0);
-                                if( !esBot.commands.executable(this.rank, chat) ) return void (0);
+                                if( !superBot.commands.executable(this.rank, chat) ) return void (0);
                                 else{
-                                    if(typeof esBot.roomSettings.opLink === "string")
-                                        return API.sendChat("/me Lista OP : " + esBot.roomSettings.opLink);
+                                    if(typeof superBot.roomSettings.opLink === "string")
+                                        return API.sendChat("/me Lista OP : " + superBot.roomSettings.opLink);
                                     
                                 };                              
                         },
@@ -2003,7 +2003,7 @@ var superBot = {
                         type: 'exact',
                         functionality: function(chat, cmd){
                                 if(this.type === 'exact' && chat.message.length !== cmd.length) return void (0);
-                                if( !esBot.commands.executable(this.rank, chat) ) return void (0);
+                                if( !superBot.commands.executable(this.rank, chat) ) return void (0);
                                 else{
                                     API.sendChat('/me Pong! :yum: ')
                                 };                              
@@ -2015,10 +2015,10 @@ var superBot = {
                         type: 'exact',
                         functionality: function(chat, cmd){
                                 if(this.type === 'exact' && chat.message.length !== cmd.length) return void (0);
-                                if( !esBot.commands.executable(this.rank, chat) ) return void (0);
+                                if( !superBot.commands.executable(this.rank, chat) ) return void (0);
                                 else{
                                     storeToStorage();
-                                    esBot.disconnectAPI();
+                                    superBot.disconnectAPI();
                                     setTimeout(function(){
                                     window.location.reload(false);
                                         },1000);
@@ -2032,12 +2032,12 @@ var superBot = {
                         type: 'exact',
                         functionality: function(chat, cmd){
                                 if(this.type === 'exact' && chat.message.length !== cmd.length) return void (0);
-                                if( !esBot.commands.executable(this.rank, chat) ) return void (0);
+                                if( !superBot.commands.executable(this.rank, chat) ) return void (0);
                                 else{
-                                    API.sendChat('/me Reiniciando o Bot.. :yum: .');
-                                    esBot.disconnectAPI();
-                                    kill();
-                                    setTimeout(function(){$.getScript(esBot.scriptLink);},2000);
+                                    API.sendChat('/me Reiniciando SuperBot.. :yum: .');
+                                    superBot.disconnectAPI();
+                                    diebot();
+                                    setTimeout(function(){$.getScript(superBot.scriptLink);},2000);
                                 };                              
                         },
                 },
@@ -2047,12 +2047,12 @@ var superBot = {
                         type: 'startsWith',
                         functionality: function(chat, cmd){
                                 if(this.type === 'exact' && chat.message.length !== cmd.length) return void (0);
-                                if( !esBot.commands.executable(this.rank, chat) ) return void (0);
+                                if( !superBot.commands.executable(this.rank, chat) ) return void (0);
                                 else{
                                     var msg = chat.message;
                                     if (msg.length > cmd.length + 2) {
                                         var name = msg.substr(cmd.length + 2);
-                                        var user = esBot.userUtilities.lookupUserName(name);
+                                        var user = superBot.userUtilities.lookupUserName(name);
                                         if (typeof user !== 'boolean') {
                                             user.lastDC = {
                                                 time: null,
@@ -2072,15 +2072,15 @@ var superBot = {
                         type: 'exact',
                         functionality: function(chat, cmd){
                                 if(this.type === 'exact' && chat.message.length !== cmd.length) return void (0);
-                                if( !esBot.commands.executable(this.rank, chat) ) return void (0);
+                                if( !superBot.commands.executable(this.rank, chat) ) return void (0);
                                 else{
-                                    if(esBot.roomSettings.etaRestriction){
-                                        esBot.roomSettings.etaRestriction = !esBot.roomSettings.etaRestriction;
-                                        return API.sendChat('/me [@' + chat.from + '] eta unrestricted.');
+                                    if(superBot.roomSettings.etaRestriction){
+                                        superBot.roomSettings.etaRestriction = !superBot.roomSettings.etaRestriction;
+                                        return API.sendChat('/me [@' + chat.from + '] eta não restrito.');
                                     }
                                     else{
-                                        esBot.roomSettings.etaRestriction = !esBot.roomSettings.etaRestriction;
-                                        return API.sendChat('/me [@' + chat.from + '] eta restricted.');
+                                        superBot.roomSettings.etaRestriction = !superBot.roomSettings.etaRestriction;
+                                        return API.sendChat('/me [@' + chat.from + '] eta restrito.');
                                     } 
                                 
                                 };                              
@@ -2092,10 +2092,10 @@ var superBot = {
                         type: 'exact',
                         functionality: function(chat, cmd){
                                 if(this.type === 'exact' && chat.message.length !== cmd.length) return void (0);
-                                if( !esBot.commands.executable(this.rank, chat) ) return void (0);
+                                if( !superBot.commands.executable(this.rank, chat) ) return void (0);
                                 else{
-                                    if(!esBot.room.roulette.rouletteStatus){
-                                        esBot.room.roulette.startRoulette();
+                                    if(!superBot.room.roulette.rouletteStatus){
+                                        superBot.room.roulette.startRoulette();
                                     }
                                 };                              
                         },
@@ -2106,10 +2106,10 @@ var superBot = {
                         type: 'exact',
                         functionality: function(chat, cmd){
                                 if(this.type === 'exact' && chat.message.length !== cmd.length) return void (0);
-                                if( !esBot.commands.executable(this.rank, chat) ) return void (0);
+                                if( !superBot.commands.executable(this.rank, chat) ) return void (0);
                                 else{
-                                    if(typeof esBot.roomSettings.rulesLink === "string")
-                                        return API.sendChat("/me Encontre as regras da sala aqui : " + esBot.roomSettings.rulesLink);                                
+                                    if(typeof superBot.roomSettings.rulesLink === "string")
+                                        return API.sendChat("/me Encontre as regras da sala aqui : " + superBot.roomSettings.rulesLink);                                
                                 };                              
                         },
                 },
@@ -2119,13 +2119,13 @@ var superBot = {
                         type: 'exact',
                         functionality: function(chat, cmd){
                                 if(this.type === 'exact' && chat.message.length !== cmd.length) return void (0);
-                                if( !esBot.commands.executable(this.rank, chat) ) return void (0);
+                                if( !superBot.commands.executable(this.rank, chat) ) return void (0);
                                 else{
                                     var from = chat.from;
-                                    var woots = esBot.room.roomstats.totalWoots;
-                                    var mehs = esBot.room.roomstats.totalMehs;
-                                    var grabs = esBot.room.roomstats.totalCurates;
-                                    API.sendChat('/me [@' + from + '] Total woots: ' + woots + ', total mehs: ' + mehs + ', total grabs: ' + grabs + '.');
+                                    var woots = superBot.room.roomstats.totalWoots;
+                                    var mehs = superBot.room.roomstats.totalMehs;
+                                    var grabs = superBot.room.roomstats.totalCurates;
+                                    API.sendChat('/me [@' + from + '] :heavy_check_mark: : ' + woots + ', :heavy_minus_sign: : ' + mehs + ', :heavy_plus_sign: : ' + grabs + '.');
                                 };                              
                         },
                 },
@@ -2135,12 +2135,12 @@ var superBot = {
                         type: 'exact',
                         functionality: function(chat, cmd){
                                 if(this.type === 'exact' && chat.message.length !== cmd.length) return void (0);
-                                if( !esBot.commands.executable(this.rank, chat) ) return void (0);
+                                if( !superBot.commands.executable(this.rank, chat) ) return void (0);
                                 else{
                                     API.sendChat('/me [' + chat.from + ' usou skip.]');
                                     API.moderateForceSkip();
-                                    esBot.room.skippable = false;
-                                    setTimeout(function(){ esBot.room.skippable = true}, 5*1000);
+                                    superBot.room.skippable = false;
+                                    setTimeout(function(){ superBot.room.skippable = true}, 5*1000);
                                 
                                 };                              
                         },
@@ -2151,9 +2151,9 @@ var superBot = {
                         type: 'exact',
                         functionality: function(chat, cmd){
                                 if(this.type === 'exact' && chat.message.length !== cmd.length) return void (0);
-                                if( !esBot.commands.executable(this.rank, chat) ) return void (0);
+                                if( !superBot.commands.executable(this.rank, chat) ) return void (0);
                                 else{
-                                    API.sendChat('/me Este Bot foi criado por ' + esBot.creator + '.');
+                                    API.sendChat('/me Este Bot foi criado por ' + superBot.creator + '.');
                                 };                              
                         },
                 },
@@ -2163,46 +2163,46 @@ var superBot = {
                         type: 'exact',
                         functionality: function(chat, cmd){
                                 if(this.type === 'exact' && chat.message.length !== cmd.length) return void (0);
-                                if( !esBot.commands.executable(this.rank, chat) ) return void (0);
+                                if( !superBot.commands.executable(this.rank, chat) ) return void (0);
                                 else{
                                     var from = chat.from
                                     var msg = '/me [@' + from + '] ';
                                       
                                     msg += 'AFK removal: ';
-                                    if(esBot.roomSettings.afkRemoval) msg += 'ON';
+                                    if(superBot.roomSettings.afkRemoval) msg += 'ON';
                                     else msg += 'OFF';
                                     msg += '. ';
-                                    msg += "AFK's removed: " + esBot.room.afkList.length + '. ';
-                                    msg += 'AFK limit: ' + esBot.roomSettings.maximumAfk + '. ';
+                                    msg += "AFK's removidos: " + superBot.room.afkList.length + '. ';
+                                    msg += 'Tempo AFK Limite: ' + superBot.roomSettings.maximumAfk + '. ';
                                      
                                     msg+= 'Bouncer+: '
-                                    if(esBot.roomSettings.bouncerPlus) msg += 'ON';
+                                    if(superBot.roomSettings.bouncerPlus) msg += 'ON';
                                     else msg += 'OFF';
                                     msg += '. ';
 
                                     msg+= 'Lockguard: '
-                                    if(esBot.roomSettings.lockGuard) msg += 'ON';
+                                    if(superBot.roomSettings.lockGuard) msg += 'ON';
                                     else msg += 'OFF';
                                     msg += '. ';
 
                                     msg+= 'Cycleguard: '
-                                    if(esBot.roomSettings.cycleGuard) msg += 'ON';
+                                    if(superBot.roomSettings.cycleGuard) msg += 'ON';
                                     else msg += 'OFF';
                                     msg += '. ';
 
                                     msg+= 'Timeguard: '
-                                    if(esBot.roomSettings.timeGuard) msg += 'ON';
+                                    if(superBot.roomSettings.timeGuard) msg += 'ON';
                                     else msg += 'OFF';
                                     msg += '. ';
 
-                                    msg+= 'Chatfilter: '
-                                    if(esBot.roomSettings.filterChat) msg += 'ON';
+                                    msg+= 'Filtro de Chat: '
+                                    if(superBot.roomSettings.filterChat) msg += 'ON';
                                     else msg += 'OFF';
                                     msg += '. ';
 
-                                    var launchT = esBot.room.roomstats.launchTime;
+                                    var launchT = superBot.room.roomstats.launchTime;
                                     var durationOnline = Date.now() - launchT;
-                                    var since = esBot.roomUtilities.msToStr(durationOnline);
+                                    var since = superBot.roomUtilities.msToStr(durationOnline);
                                     msg += 'Estive ativo durante ' + since + '. ';
                                       
                                      return API.sendChat(msg);
@@ -2215,33 +2215,33 @@ var superBot = {
                         type: 'startsWith',
                         functionality: function(chat, cmd){
                                 if(this.type === 'exact' && chat.message.length !== cmd.length) return void (0);
-                                if( !esBot.commands.executable(this.rank, chat) ) return void (0);
+                                if( !superBot.commands.executable(this.rank, chat) ) return void (0);
                                 else{
                                     var msg = chat.message;
-                                    if(msg.length === cmd.length) return API.sendChat('/me [@' + chat.from + '] No user specified.');
+                                    if(msg.length === cmd.length) return API.sendChat('/me [@' + chat.from + '] Usuario não especificado.');
                                     var firstSpace = msg.indexOf(' ');
                                     //var secondSpace = msg.substring(firstSpace + 1).indexOf(' ');
                                     var lastSpace = msg.lastIndexOf(' ');
                                     var name1 = msg.substring(cmd.length + 2,lastSpace);
                                     var name2 = msg.substring(lastSpace + 2);
-                                    var user1 = esBot.userUtilities.lookupUserName(name1);
-                                    var user2 = esBot.userUtilities.lookupUserName(name2);
-                                    if(typeof user1 === 'boolean' || typeof user2 === 'boolean') return API.sendChat('/me [@' + chat.from + '] Invalid user specified. (No names with spaces!)');
-                                    if(user1.id === esBot.loggedInID || user2.id === esBot.loggedInID) return API.sendChat('/me [@' + chat.from + '] Don\'t try to add me to the waitlist, please.');
+                                    var user1 = superBot.userUtilities.lookupUserName(name1);
+                                    var user2 = superBot.userUtilities.lookupUserName(name2);
+                                    if(typeof user1 === 'boolean' || typeof user2 === 'boolean') return API.sendChat('/me [@' + chat.from + '] Usuario Invalido (Sem Nomes com espaços!)');
+                                    if(user1.id === superBot.loggedInID || user2.id === superBot.loggedInID) return API.sendChat('/me [@' + chat.from + '] Por favor, não tentem me adicionar na lista de espera.');
                                     var p1 = API.getWaitListPosition(user1.id);
                                     var p2 = API.getWaitListPosition(user2.id);
-                                    if(p1 < 0 || p2 < 0) return API.sendChat('/me [@' + chat.from + '] Please only swap users that are in the waitlist!');
-                                    API.sendChat("/me Swapping " + name1 + " with " + name2 + ".");
+                                    if(p1 < 0 || p2 < 0) return API.sendChat('/me [@' + chat.from + '] Por favor, só troque usuarios que estejam na lista de espera!');
+                                    API.sendChat("/me Trocando " + name1 + " com " + name2 + ".");
                                     if(p1 < p2){
-                                        esBot.userUtilities.moveUser(user2.id, p1, false);
+                                        superBot.userUtilities.moveUser(user2.id, p1, false);
                                         setTimeout(function(user1, p2){
-                                            esBot.userUtilities.moveUser(user1.id, p2, false);
+                                            superBot.userUtilities.moveUser(user1.id, p2, false);
                                         },2000, user1, p2);
                                     }
                                     else{
-                                        esBot.userUtilities.moveUser(user1.id, p2, false);
+                                        superBot.userUtilities.moveUser(user1.id, p2, false);
                                         setTimeout(function(user2, p1){
-                                            esBot.userUtilities.moveUser(user2.id, p1, false);
+                                            superBot.userUtilities.moveUser(user2.id, p1, false);
                                         },2000, user2, p1);
                                     }
                                 };
@@ -2253,10 +2253,10 @@ var superBot = {
                         type: 'exact',
                         functionality: function(chat, cmd){
                                 if(this.type === 'exact' && chat.message.length !== cmd.length) return void (0);
-                                if( !esBot.commands.executable(this.rank, chat) ) return void (0);
+                                if( !superBot.commands.executable(this.rank, chat) ) return void (0);
                                 else{
-                                    if(typeof esBot.roomSettings.themeLink === "string")
-                                        API.sendChat("/me Encontre os Temas Permitidos na sala, aqui : " + esBot.roomSettings.themeLink);
+                                    if(typeof superBot.roomSettings.themeLink === "string")
+                                        API.sendChat("/me Encontre os Temas Permitidos na sala, aqui : " + superBot.roomSettings.themeLink);
                                 
                                 };                              
                         },
@@ -2267,14 +2267,14 @@ var superBot = {
                         type: 'exact',
                         functionality: function(chat, cmd){
                                 if(this.type === 'exact' && chat.message.length !== cmd.length) return void (0);
-                                if( !esBot.commands.executable(this.rank, chat) ) return void (0);
+                                if( !superBot.commands.executable(this.rank, chat) ) return void (0);
                                 else{
-                                    if(esBot.roomSettings.timeGuard){
-                                        esBot.roomSettings.timeGuard = !esBot.roomSettings.timeGuard;
+                                    if(superBot.roomSettings.timeGuard){
+                                        superBot.roomSettings.timeGuard = !superBot.roomSettings.timeGuard;
                                         return API.sendChat('/me [@' + chat.from + '] Timeguard desativado.');
                                     }
                                     else{
-                                        esBot.roomSettings.timeGuard = !esBot.roomSettings.timeGuard;
+                                        superBot.roomSettings.timeGuard = !superBot.roomSettings.timeGuard;
                                         return API.sendChat('/me [@' + chat.from + '] Timeguard ativado.');
                                     } 
                                 
@@ -2287,14 +2287,14 @@ var superBot = {
                         type: 'exact',
                         functionality: function(chat, cmd){
                                 if(this.type === 'exact' && chat.message.length !== cmd.length) return void (0);
-                                if( !esBot.commands.executable(this.rank, chat) ) return void (0);
+                                if( !superBot.commands.executable(this.rank, chat) ) return void (0);
                                 else{
-                                    if(esBot.roomSettings.motdEnabled){
-                                        esBot.roomSettings.motdEnabled = !esBot.roomSettings.motdEnabled;
+                                    if(superBot.roomSettings.motdEnabled){
+                                        superBot.roomSettings.motdEnabled = !superBot.roomSettings.motdEnabled;
                                         API.sendChat('/me MotD desativado.');
                                     }
                                     else{
-                                        esBot.roomSettings.motdEnabled = !esBot.roomSettings.motdEnabled;
+                                        superBot.roomSettings.motdEnabled = !superBot.roomSettings.motdEnabled;
                                         API.sendChat('/me MotD ativado.');
                                     }
                                 };                              
@@ -2306,7 +2306,7 @@ var superBot = {
                         type: 'startsWith',
                         functionality: function(chat, cmd){
                                 if(this.type === 'exact' && chat.message.length !== cmd.length) return void (0);
-                                if( !esBot.commands.executable(this.rank, chat) ) return void (0);
+                                if( !superBot.commands.executable(this.rank, chat) ) return void (0);
                                 else{
                                     $(".icon-population").click();
                                     $(".icon-ban").click();
@@ -2328,7 +2328,7 @@ var superBot = {
                                             return API.sendChat('/me [@' + chat.from + '] O usuario não foi banido. :warning: ');  
                                         }                                
                                         API.moderateUnbanUser(user.id);
-                                        console.log("Unbanned " + name);
+                                        console.log("Desbanido: " + name);
                                         setTimeout(function(){
                                             $(".icon-chat").click();
                                         },1000);
