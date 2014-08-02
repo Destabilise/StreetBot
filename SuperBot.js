@@ -1865,7 +1865,7 @@ var superBot = {
                                     var maxTime = msg.substring(cmd.length + 1);
                                     if(!isNaN(maxTime)){
                                         superBot.roomSettings.maximumSongLength = maxTime;
-                                        return API.sendChat('/me [@' + chat.from + '] O Maximo Tempo para Músicas foi definida para ' +superBot superBot.roomSettings.maximumSongLength + ' minutos.');
+                                        return API.sendChat('/me [@' + chat.from + '] O Maximo Tempo para Músicas foi definida para ' + superBot.roomSettings.maximumSongLength + ' minutos.');
                                     }
                                     else return API.sendChat('/me [@' + chat.from + '] Sem Tempo Correcto Definido.');
                                 };                              
