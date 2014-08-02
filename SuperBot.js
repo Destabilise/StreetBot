@@ -2402,12 +2402,12 @@ var superBot = {
                         type: 'startsWith',
                         functionality: function(chat, cmd){
                                 if(this.type === 'exact' && chat.message.length !== cmd.length) return void (0);
-                                if( !superBotsuperBot.commands.executable(this.rank, chat) ) return void (0);
+                                if( !superBot.commands.executable(this.rank, chat) ) return void (0);
                                 else{
                                     var msg = chat.message;
                                     var cd = msg.substring(cmd.length + 1);
                                     if(!isNaN(cd)){
-                                        superBotsuperBot.roomSettings.commandCooldown = cd;
+                                        superBot.roomSettings.commandCooldown = cd;
                                         return API.sendChat('/me [@' + chat.from + '] O CoolDown para comandos de users está agora definido para ' + superBot.roomSettings.commandCooldown + ' segundos.');
                                     }
                                     else return API.sendChat('/me [@' + chat.from + '] :warning: CoolDown Definido Incorreto.');
@@ -2421,15 +2421,15 @@ var superBot = {
                         type: 'exact',
                         functionality: function(chat, cmd){
                                 if(this.type === 'exact' && chat.message.length !== cmd.length) return void (0);
-                                if( !superBotsuperBot.commands.executable(this.rank, chat) ) return void (0);
+                                if( !superBot.commands.executable(this.rank, chat) ) return void (0);
                                 else{
-                                    if(superBotsuperBot.roomSettings.usercommandsEnabled){
+                                    if(superBot.roomSettings.usercommandsEnabled){
                                         API.sendChat('/me [@' + chat.from + '] :warning: Comandos de User desativados.');
-                                        superBotsuperBot.roomSettings.usercommandsEnabled = !superBotsuperBot.roomSettings.usercommandsEnabled;
+                                        superBot.roomSettings.usercommandsEnabled = !superBot.roomSettings.usercommandsEnabled;
                                     }
                                     else{
                                         API.sendChat('/me [@' + chat.from + '] :warning: Comandos de User ativados .');
-                                        superBotsuperBot.roomSettings.usercommandsEnabled = !superBotsuperBot.roomSettings.usercommandsEnabled;
+                                        superBot.roomSettings.usercommandsEnabled = !superBot.roomSettings.usercommandsEnabled;
                                     }
                                 };                              
                         },
@@ -2440,12 +2440,12 @@ var superBot = {
                         type: 'startsWith',
                         functionality: function(chat, cmd){
                                 if(this.type === 'exact' && chat.message.length !== cmd.length) return void (0);
-                                if( !superBotsuperBot.commands.executable(this.rank, chat) ) return void (0);
+                                if( !superBot.commands.executable(this.rank, chat) ) return void (0);
                                 else{
                                     var msg = chat.message;
                                     if(msg.length === cmd.length) return API.sendChat('[@' + chat.from + '] :warning: Usuario não especificado.');
                                     var name = msg.substring(cmd.length + 2);
-                                    var user = superBotsuperBot.userUtilities.lookupUserName(name);
+                                    var user = superBot.userUtilities.lookupUserName(name);
                                     if(user === false) return API.sendChat('/me [@' + chat.from + '] :warning: Usuario Especificado é Invalido');
                                     var vratio = user.votes;
                                     var ratio = vratio.woot / vratio.meh;
@@ -2459,14 +2459,14 @@ var superBot = {
                         type: 'exact',
                         functionality: function(chat, cmd){
                                 if(this.type === 'exact' && chat.message.length !== cmd.length) return void (0);
-                                if( !superBotsuperBot.commands.executable(this.rank, chat) ) return void (0);
+                                if( !superBot.commands.executable(this.rank, chat) ) return void (0);
                                 else{
-                                    if(superBotsuperBot.roomSettings.welcome){
-                                        superBotsuperBot.roomSettings.welcome = !superBotsuperBot.roomSettings.welcome;
+                                    if(superBot.roomSettings.welcome){
+                                        superBot.roomSettings.welcome = !superBot.roomSettings.welcome;
                                         return API.sendChat('/me [@' + chat.from + '] :warning: Mensagem de Boas-Vindas desativado .');
                                     }
                                     else{
-                                        superBotsuperBot.roomSettings.welcome = !superBotsuperBot.roomSettings.welcome;
+                                        superBot.roomSettings.welcome = !superBot.roomSettings.welcome;
                                         return API.sendChat('/me [@' + chat.from + '] :warning: Mensagem De Boas-Vindas ativado. ');
                                     } 
                                 
@@ -2479,10 +2479,10 @@ var superBot = {
                         type: 'exact',
                         functionality: function(chat, cmd){
                                 if(this.type === 'exact' && chat.message.length !== cmd.length) return void (0);
-                                if( !superBotsuperBot.commands.executable(this.rank, chat) ) return void (0);
+                                if( !superBot.commands.executable(this.rank, chat) ) return void (0);
                                 else{
-                                    if(typeof superBotsuperBot.roomSettings.website === "string")
-                                        API.sendChat('/me Visite o nosso site : ' + superBotsuperBot.roomSettings.website);
+                                    if(typeof superBot.roomSettings.website === "string")
+                                        API.sendChat('/me Visite o nosso site : ' + superBot.roomSettings.website);
                                 };                              
                         },
                 },
@@ -2492,10 +2492,10 @@ var superBot = {
                         type: 'exact',
                         functionality: function(chat, cmd){
                                 if(this.type === 'exact' && chat.message.length !== cmd.length) return void (0);
-                                if( !superBotsuperBot.commands.executable(this.rank, chat) ) return void (0);
+                                if( !superBot.commands.executable(this.rank, chat) ) return void (0);
                                 else{
-                                    if(typeof superBotsuperBot.roomSettings.youtubeLink === "string")
-                                        API.sendChat('/me [' + chat.from + '] Subscreva-se no nosso canal : ' + superBotsuperBot.roomSettings.youtubeLink);                                
+                                    if(typeof superBot.roomSettings.youtubeLink === "string")
+                                        API.sendChat('/me [' + chat.from + '] Subscreva-se no nosso canal : ' + superBot.roomSettings.youtubeLink);                                
                                 };                              
                         },
                 },
@@ -2504,5 +2504,5 @@ var superBot = {
                 
 };
 
-superBotsuperBot.startup(); 
+superBot.startup(); 
 }).call(this);
