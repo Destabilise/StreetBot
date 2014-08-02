@@ -1319,8 +1319,8 @@ var superBot = {
                         type: 'startsWith',
 
                         cookies: ['lhe deu um biscoito de chocolate!',
-                                    'lhe deu um cookie de aveia caseiro macio! ' ",
-                                    'lhe deu um simples e seco, biscoito de idade. Ele foi o último na bolsa. . Gross '"",
+                                    'lhe deu um cookie de aveia caseiro macio! ,'
+                                    'lhe deu um simples e seco, biscoito de idade. Ele foi o último na bolsa. . Gross ,'
                                     'Dá-lhe um bolinho de açúcar. O que, sem geada e polvilha? 0/10 não tocaria. '",
                                     'Dá-lhe um biscoito de chocolate. Oh, espere, essas são passas. Bleck! '
                                     'Dá-lhe um enorme cookie. Picar que lhe dá mais cookies. Estranho. ",
