@@ -487,7 +487,7 @@ var superBot = {
                     toggle.click();
                     if(superBot.roomSettings.cycleGuard){
                     superBot.room.cycleTimer = setTimeout(function(){
-                            if(toggle.hasClass(superBot"enabled")) toggle.click();
+                            if(toggle.hasClass("enabled")) toggle.click();
                             }, superBot.roomSettings.cycleMaxTime * 60 * 1000);
                     }        
                 }
