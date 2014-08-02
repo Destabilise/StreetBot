@@ -91,7 +91,7 @@ var superBot = {
         name: "SuperBot",
         creator: "TioFrosty , DropTheBass",
         loggedInID: null,
-        scriptLink: "https://raw.githubusercontent.com/iFrooosty/StreetBot/master/StreetBot.js",
+        scriptLink: "https://raw.githubusercontent.com/Destabilise/SuperBot/master/SuperBot.js",
         cmdLink: "http://git.io/245Ppg",
         roomSettings: {
             maximumAfk: 9999,
