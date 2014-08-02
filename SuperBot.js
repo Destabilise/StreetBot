@@ -1337,7 +1337,7 @@ var superBot = {
                                     'Dá-lhe um cookie com um copo de leite! ',
                                     'Dá-lhe um cookie arco-íris feito com amor: coração:',
                                     'Dá-lhe um cookie velho que foi deixado de fora na chuva, ele está bolorento.',
-                                    "Bakes você biscoitos frescos, cheira incrível. '
+                                    'Bakes você biscoitos frescos, cheira incrível. '
                             ],
 
                         getCookie: function() {
