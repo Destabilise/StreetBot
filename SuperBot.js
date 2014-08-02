@@ -1319,24 +1319,24 @@ var superBot = {
                         type: 'startsWith',
 
                         cookies: ['lhe deu um biscoito de chocolate!',
-                                    'lhe deu um cookie de aveia caseiro macio! ,'
-                                    'lhe deu um simples e seco, biscoito de idade. Ele foi o último na bolsa. . Gross ,'
-                                    'Dá-lhe um bolinho de açúcar. O que, sem geada e polvilha? 0/10 não tocaria. '",
-                                    'Dá-lhe um biscoito de chocolate. Oh, espere, essas são passas. Bleck! '
-                                    'Dá-lhe um enorme cookie. Picar que lhe dá mais cookies. Estranho. ",
-                                    'Dá-lhe um biscoito da sorte. Lê-se "Por que você não esta trabalhando em algum projeto?'",
+                                    'lhe deu um cookie de aveia caseiro macio!',
+                                    'lhe deu um simples e seco, biscoito de idade. Ele foi o último na bolsa. . Gross ',
+                                    'Dá-lhe um bolinho de açúcar. O que, sem geada e polvilha? 0/10 não tocaria',
+                                    'Dá-lhe um biscoito de chocolate. Oh, espere, essas são passas. Bleck!',
+                                    'Dá-lhe um enorme cookie. Picar que lhe dá mais cookies. Estranho.',
+                                    'Dá-lhe um biscoito da sorte. Lê-se "Por que você não esta trabalhando em algum projeto?',
                                     'Dá-lhe um biscoito da sorte. Lê-se "Dê aquela pessoa especial um elogio" ',
-                                    'Dá-lhe um biscoito da sorte. Lê "Tome um risco! '",
-                                    'Dá-lhe um biscoito da sorte. Lê "Vá para fora '.",
-                                    'Dá-lhe um biscoito da sorte. Lê-se "Não se esqueºa de comer seus legumes!'",
-                                    'Dá-lhe um biscoito da sorte. Lê "Você levanta mesmo? '",
+                                    'Dá-lhe um biscoito da sorte. Lê "Tome um risco!',
+                                    'Dá-lhe um biscoito da sorte. Lê "Vá para fora" ',
+                                    'Dá-lhe um biscoito da sorte. Lê-se "Não se esqueça de comer seus legumes! ',
+                                    'Dá-lhe um biscoito da sorte. Lê "Você levanta mesmo?" ',
                                     'Dá-lhe um biscoito da sorte. Lê "M808 pls" ',
-                                    'Dá-lhe um biscoito da sorte. Lê "Se você mover os quadris, você vai obter todas as senhoras."',
-                                    'Dá-lhe um biscoito da sorte. Lê o "eu te amo". ",
-                                    'Dá-lhe um cookie de Ouro. Você pode não comer, porque ela é feita de ouro. Droga.,
-                                    'Dá-lhe um cookie com um copo de leite! '",
-                                    'Dá-lhe um cookie arco-íris feito com amor: coração: '"'
-                                    'Dá-lhe um cookie velho que foi deixado de fora na chuva, ele está bolorento. ' ",
+                                    'Dá-lhe um biscoito da sorte. Lê "Se você mover os quadris, você vai obter todas as senhoras." ',
+                                    'Dá-lhe um biscoito da sorte. Lê o "eu te amo". ',
+                                    'Dá-lhe um cookie de Ouro. Você pode não comer, porque ela é feita de ouro. Droga',
+                                    'Dá-lhe um cookie com um copo de leite! ',
+                                    'Dá-lhe um cookie arco-íris feito com amor: coração:',
+                                    'Dá-lhe um cookie velho que foi deixado de fora na chuva, ele está bolorento.',
                                     "Bakes você biscoitos frescos, cheira incrível. '
                             ],
 
