@@ -126,8 +126,8 @@ var superBot = {
             etaRestriction: false,
             welcome: true,
             opLink: null,
-            rulesLink: null,
-            themeLink: null,
+            regrasLink: null,
+            temaLink: null,
             fbLink: "http://bit.ly/DTMGRUPO",
             youtubeLink: null,
             website: "http://bit.ly/DTMPAGE",
@@ -608,7 +608,7 @@ var superBot = {
                     var now = +new Date();
                     var interfix = '';
                     if(plays > 1) interfix = 's'
-                    API.sendChat('/me :repeat: Esta música foi tocada ' + plays + ' vez(es) ' + interfix + ' na última ' + superBot.roomUtilities.msToStr(Date.now() - firstPlayed) + ', Foi tocada pela última vez á ' + superBot.roomUtilities.msToStr(Date.now() - lastPlayed) + ' atrás. :repeat: ');
+                    API.sendChat('/me :repeat: Esta música foi tocada ' + plays + ' vez(es) ' + interfix + ' na(s) última(s) ' + superBot.roomUtilities.msToStr(Date.now() - firstPlayed) + ', Foi tocada pela última vez á ' + superBot.roomUtilities.msToStr(Date.now() - lastPlayed) + ' atrás. :repeat: ');
 
                     superBot.room.historyList[i].push(+new Date());
                     alreadyPlayed = true;
@@ -691,7 +691,7 @@ var superBot = {
                 return true;
             }
             msg = msg.toLowerCase();
-            if(msg === 'skip'){
+            if(msg === 'skip, pula'){
                     API.sendChat("/me @" + chat.from + ", Não peça para pular.");
                     return true;
                     }
@@ -807,10 +807,10 @@ var superBot = {
                     case '!join':               superBot.commands.joinCommand.functionality(chat, '!join');                            executed = true; break;
                     case '!jointime':           superBot.commands.jointimeCommand.functionality(chat, '!jointime');                    executed = true; break;
                     case '!kick':               superBot.commands.kickCommand.functionality(chat, '!kick');                            executed = true; break;
-                    case '!diebot':             superBot.commands.diebotCommand.functionality(chat, '!diebot');                            executed = true; break;
+                    case '!diebot':             superBot.commands.diebotCommand.functionality(chat, '!diebot');                        executed = true; break;
                     case '!leave':              superBot.commands.leaveCommand.functionality(chat, '!leave');                          executed = true; break;
                     case '!link':               superBot.commands.linkCommand.functionality(chat, '!link');                            executed = true; break;
-                    case '!lock':               superBot.commands.lockCommand.functionality(chat, '!lock');                            executed = true; break;
+                    case '!trava':              superBot.commands.travaCommand.functionality(chat, '!trava');                          executed = true; break;
                     case '!lockdown':           superBot.commands.lockdownCommand.functionality(chat, '!lockdown');                    executed = true; break;
                     case '!lockguard':          superBot.commands.lockguardCommand.functionality(chat, '!lockguard');                  executed = true; break;
                     case '!lockskip':           superBot.commands.lockskipCommand.functionality(chat, '!lockskip');                    executed = true; break;
@@ -827,16 +827,16 @@ var superBot = {
                     case '!refresh':            superBot.commands.refreshCommand.functionality(chat, '!refresh');                      executed = true; break;
                     case '!restricteta':        superBot.commands.restrictetaCommand.functionality(chat, '!restricteta');              executed = true; break;
                     case '!roulette':           superBot.commands.rouletteCommand.functionality(chat, '!roulette');                    executed = true; break;
-                    case '!rules':              superBot.commands.rulesCommand.functionality(chat, '!rules');                          executed = true; break;
+                    case '!regras':             superBot.commands.regrasCommand.functionality(chat, '!regras');                        executed = true; break;
                     case '!sessionstats':       superBot.commands.sessionstatsCommand.functionality(chat, '!sessionstats');            executed = true; break;
-                    case '!skip':               superBot.commands.skipCommand.functionality(chat, '!skip');                            executed = true; break;
+                    case '!pula':               superBot.commands.pulaCommand.functionality(chat, '!pula');                            executed = true; break;
                     case '!status':             superBot.commands.statusCommand.functionality(chat, '!status');                        executed = true; break;
-                    case '!swap':               superBot.commands.swapCommand.functionality(chat, '!swap');
-                    case '!theme':              superBot.commands.themeCommand.functionality(chat, '!theme');                          executed = true; break;
+                    case '!swap':               superBot.commands.swapCommand.functionality(chat, '!swap');                            executed = true; break;
+                    case '!tema':               superBot.commands.temaCommand.functionality(chat, '!tema');                            executed = true; break;
                     case '!timeguard':          superBot.commands.timeguardCommand.functionality(chat, '!timeguard');                  executed = true; break;
                     case '!togglemotd':         superBot.commands.togglemotdCommand.functionality(chat, '!togglemotd');                executed = true; break;
                     case '!unban':              superBot.commands.unbanCommand.functionality(chat, '!unban');                          executed = true; break;
-                    case '!unlock':             superBot.commands.unlockCommand.functionality(chat, '!unlock');                        executed = true; break;
+                    case '!destrava':           superBot.commands.destravaCommand.functionality(chat, '!destrava');                    executed = true; break;
                     case '!unmute':             superBot.commands.unmuteCommand.functionality(chat, '!unmute');                        executed = true; break;
                     case '!usercmdcd':          superBot.commands.usercmdcdCommand.functionality(chat, '!usercmdcd');                  executed = true; break;
                     case '!usercommands':       superBot.commands.usercommandsCommand.functionality(chat, '!usercommands');            executed = true; break;
@@ -1163,12 +1163,12 @@ var superBot = {
                                 if( !superBot.commands.executable(this.rank, chat) ) return void (0);
                                 else{
                                     var msg = chat.message;
-                                    if(msg.length === cmd.length) return API.sendChat('/me [@' + chat.from + '] No user specified.')
+                                    if(msg.length === cmd.length) return API.sendChat('/me [@' + chat.from + '] Usuario não encontrado.')
                                     var name = msg.substring(cmd.length + 2);
                                     var user = superBot.userUtilities.lookupUserName(name);
-                                    if(typeof user === 'boolean') return API.sendChat('/me [@' + chat.from + '] Invalid user specified.');
+                                    if(typeof user === 'boolean') return API.sendChat('/me [@' + chat.from + '] Usuario Invalido.');
                                     superBot.userUtilities.setLastActivity(user);
-                                    API.sendChat('/me [@' + chat.from + '] Reset the afk status of @' + name + '.');
+                                    API.sendChat('/me [@' + chat.from + '] AFK Status de @' + name + ' resetado.');
                                 };                              
                         },
                 },
@@ -1181,10 +1181,10 @@ var superBot = {
                                 if( !superBot.commands.executable(this.rank, chat) ) return void (0);
                                 else{                                    
                                     var msg = chat.message;
-                                    if(msg.length === cmd.length) return API.sendChat('/me [@' + chat.from + '] No user specified.');
+                                    if(msg.length === cmd.length) return API.sendChat('/me [@' + chat.from + '] Usuario nao encontrado.');
                                     var name = msg.substring(cmd.length + 2);
                                     var user = superBot.userUtilities.lookupUserName(name);
-                                    if(typeof user === 'boolean') return API.sendChat('/me [@' + chat.from + '] Invalid user specified.');
+                                    if(typeof user === 'boolean') return API.sendChat('/me [@' + chat.from + '] Usuario Invalido.');
                                     var lastActive = superBot.userUtilities.getLastActivity(user);
                                     var inactivity = Date.now() - lastActive;
                                     var time = superBot.roomUtilities.msToStr(inactivity);
@@ -1232,7 +1232,7 @@ var superBot = {
                                 if(this.type === 'exact' && chat.message.length !== cmd.length) return void (0);
                                 if( !superBot.commands.executable(this.rank, chat) ) return void (0);
                                 else{
-                                    API.sendChat("/me A Brand Ambassador is the voice of the plug.dj users. They promote events, engage the community and share the plug.dj message around the world. For more info: http://blog.plug.dj/brand-ambassadors/");
+                                    API.sendChat("/me Um embaixador da marca é a voz dos usuários plug.dj. Eles promovem eventos, envolver a comunidade e compartilhar a mensagem plug.dj todo o mundo. Para mais informações: http://blog.plug.dj/brand-ambassadors/");
                                 };                              
                         },
                 },
@@ -1245,11 +1245,11 @@ var superBot = {
                                 if( !superBot.commands.executable(this.rank, chat) ) return void (0);
                                 else{
                                     var msg = chat.message;
-                                    if(msg.length === cmd.length) return API.sendChat('/me [@' + chat.from + '] No valid user specified.');
+                                    if(msg.length === cmd.length) return API.sendChat('/me [@' + chat.from + '] Usuario especificado não é valido.');
                                     var name = msg.substr(cmd.length + 2);
                                     var user = superBot.userUtilities.lookupUserName(name);
-                                    if(typeof user === 'boolean') return API.sendChat('/me [@' + chat.from + '] Invalid user specified.');
-                                    API.sendChat('/me [' + chat.from + ' whips out the banhammer :hammer:]');
+                                    if(typeof user === 'boolean') return API.sendChat('/me [@' + chat.from + '] Usuario invalido.');
+                                    API.sendChat('/me [' + chat.from + ' puxa o BanHammer :hammer:]');
                                     API.moderateBanUser(user.id, 1, API.BAN.DAY);
                                 };                              
                         },
@@ -1318,26 +1318,26 @@ var superBot = {
                         rank: 'user',
                         type: 'startsWith',
 
-                        cookies: ['has given you a chocolate chip cookie!',
-                                   'has given you a soft homemade oatmeal cookie!',
-                                   'has given you a plain, dry, old cookie. It was the last one in the bag. Gross.',
-                                   'gives you a sugar cookie. What, no frosting and sprinkles? 0/10 would not touch.',
-                                   'gives you a chocolate chip cookie. Oh wait, those are raisins. Bleck!',
-                                   'gives you an enormous cookie. Poking it gives you more cookies. Weird.',
-                                   'gives you a fortune cookie. It reads "Why aren\'t you working on any projects?"',
-                                   'gives you a fortune cookie. It reads "Give that special someone a compliment"',
-                                   'gives you a fortune cookie. It reads "Take a risk!"',
-                                   'gives you a fortune cookie. It reads "Go outside."',
-                                   'gives you a fortune cookie. It reads "Don\'t forget to eat your veggies!"',
-                                   'gives you a fortune cookie. It reads "Do you even lift?"',
-                                   'gives you a fortune cookie. It reads "m808 pls"',
-                                   'gives you a fortune cookie. It reads "If you move your hips, you\'ll get all the ladies."',
-                                   'gives you a fortune cookie. It reads "I love you."',
-                                   'gives you a Golden Cookie. You can\'t eat it because it is made of gold. Dammit.',
-                                   'gives you an Oreo cookie with a glass of milk!',
-                                   'gives you a rainbow cookie made with love :heart:',
-                                   'gives you an old cookie that was left out in the rain, it\'s moldy.',
-                                   'bakes you fresh cookies, it smells amazing.'
+                        cookies: ['lhe deu um biscoito de chocolate!',
+                                    'lhe deu um cookie de aveia caseiro macio! ",
+                                    'lhe deu um simples e seco, biscoito de idade. Ele foi o último na bolsa. . Gross,
+                                    'Dá-lhe um bolinho de açúcar. O que, sem geada e polvilha? 0/10 não tocaria. ",
+                                    'Dá-lhe um biscoito de chocolate. Oh, espere, essas são passas. Bleck! '
+                                    'Dá-lhe um enorme cookie. Picar que lhe dá mais cookies. Estranho. ",
+                                    'Dá-lhe um biscoito da sorte. Lê-se "Por que você não esta trabalhando em algum projeto?'",
+                                    'Dá-lhe um biscoito da sorte. Lê-se "Dê aquela pessoa especial um elogio" ',
+                                    'Dá-lhe um biscoito da sorte. Lê "Tome um risco! '",
+                                    'Dá-lhe um biscoito da sorte. Lê "Vá para fora '.",
+                                    'Dá-lhe um biscoito da sorte. Lê-se "Não se esqueºa de comer seus legumes!'",
+                                    'Dá-lhe um biscoito da sorte. Lê "Você levanta mesmo? '",
+                                    'Dá-lhe um biscoito da sorte. Lê "M808 pls" ',
+                                    'Dá-lhe um biscoito da sorte. Lê "Se você mover os quadris, você vai obter todas as senhoras."',
+                                    'Dá-lhe um biscoito da sorte. Lê o "eu te amo". ",
+                                    'Dá-lhe um cookie de Ouro. Você pode não comer, porque ela é feita de ouro. Droga.,
+                                    'Dá-lhe um cookie com um copo de leite! ",
+                                    'Dá-lhe um cookie arco-íris feito com amor: coração:',
+                                    'Dá-lhe um cookie velho que foi deixado de fora na chuva, ele está bolorento. ",
+                                    "Bakes você biscoitos frescos, cheira incrível. '
                             ],
 
                         getCookie: function() {
@@ -1363,7 +1363,7 @@ var superBot = {
                                           return API.sendChat("/em não vê '" + name + "' na sala e come o seu cookie.");
                                         } 
                                         else if(user.username === chat.from){
-                                            return API.sendChat("/me @" + name +  ", you're a bit greedy, aren't you? Giving cookies to yourself, bah. Share some with other people!")
+                                            return API.sendChat("/me @" + name +  ", você está um pouco ganancioso, não é? Dando cookies para si mesmo, bah. Compartilhe alguns com outras pessoas!")
                                         }
                                         else {
                                             return API.sendChat("/me @" + user.username + ", @" + chat.from + ' ' + this.getCookie() );
@@ -1696,7 +1696,7 @@ var superBot = {
                         },
                 },
 
-                lockCommand: {
+                travaCommand: {
                         rank: 'mod',
                         type: 'exact',
                         functionality: function(chat, cmd){
@@ -2101,15 +2101,15 @@ var superBot = {
                         },
                 },
 
-                rulesCommand: {
+                regrasCommand: {
                         rank: 'user',
                         type: 'exact',
                         functionality: function(chat, cmd){
                                 if(this.type === 'exact' && chat.message.length !== cmd.length) return void (0);
                                 if( !superBot.commands.executable(this.rank, chat) ) return void (0);
                                 else{
-                                    if(typeof superBot.roomSettings.rulesLink === "string")
-                                        return API.sendChat("/me Encontre as regras da sala aqui : " + superBot.roomSettings.rulesLink);                                
+                                    if(typeof superBot.roomSettings.regrasLink === "string")
+                                        return API.sendChat("/me Encontre as regras da sala aqui : " + superBot.roomSettings.regrasLink);                                
                                 };                              
                         },
                 },
@@ -2130,7 +2130,7 @@ var superBot = {
                         },
                 },
 
-                skipCommand: {
+                pulaCommand: {
                         rank: 'bouncer',
                         type: 'exact',
                         functionality: function(chat, cmd){
@@ -2248,15 +2248,15 @@ var superBot = {
                         },
                 },
 
-                themeCommand: {
+                temaCommand: {
                         rank: 'user',
                         type: 'exact',
                         functionality: function(chat, cmd){
                                 if(this.type === 'exact' && chat.message.length !== cmd.length) return void (0);
                                 if( !superBot.commands.executable(this.rank, chat) ) return void (0);
                                 else{
-                                    if(typeof superBot.roomSettings.themeLink === "string")
-                                        API.sendChat("/me Encontre os Temas Permitidos na sala, aqui : " + superBot.roomSettings.themeLink);
+                                    if(typeof superBot.roomSettings.temaLink === "string")
+                                        API.sendChat("/me Encontre os Temas Permitidos na sala, aqui : " + superBot.roomSettings.temaLink);
                                 
                                 };                              
                         },
@@ -2337,7 +2337,7 @@ var superBot = {
                         },
                 },
 
-                unlockCommand: {
+                destravaCommand: {
                         rank: 'mod',
                         type: 'exact',
                         functionality: function(chat, cmd){
